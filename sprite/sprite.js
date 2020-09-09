@@ -16,7 +16,8 @@ texturePacker(images, {
     allowRotation: false,
     prependFolderName: false,
     removeFileExtension: true,
-    packerMethod: "BestLongSideFit",
+    packer: "MaxRectsPacker",
+    packerMethod: "SmartArea",
     tinify: process.env.TINIFY !== undefined,
     tinifyKey: process.env.TINIFY,
     exporter: {

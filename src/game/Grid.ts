@@ -5,7 +5,7 @@ import Context from "../core/Video/Context";
 import Sprite from "../core/Video/Sprite";
 import dispatcher from "../core/Engine/Dispatcher";
 import rnd from "../core/Math/Rnd";
-import Config from "../config";
+import Config from "./Config";
 
 export default class Grid extends Object2D
 {
@@ -22,7 +22,7 @@ export default class Grid extends Object2D
         {
             for (let x = 0; x < this.width; x++)
             {
-                this.tiles.push(new Tile(x * 16 - 40, y * 16 - 40, this.group));
+                this.tiles.push(new Tile(x * 16 - 40, y * 16 - 40, 0, this.group));
             }
         }
         for (let y = 0; y < this.height; y++)
@@ -36,6 +36,16 @@ export default class Grid extends Object2D
                     .add(this.tile(x, y + 1));
             }
         }
+    }
+
+    load(data: number[])
+    {
+        this.tiles.forEach((tile, i) => tile.type = data[i] || 0);
+    }
+
+    toJSON(): number[]
+    {
+        return this.tiles.map(t => t.type);
     }
 
     render(ctx: Context)

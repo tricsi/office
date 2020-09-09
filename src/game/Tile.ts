@@ -2,7 +2,7 @@ import Sprite from "../core/Video/Sprite";
 import { Task } from "../core/Engine/Scheduler";
 import rnd from "../core/Math/Rnd";
 import { pointer } from "../core/Engine/Pointer";
-import Config from "../config";
+import Config from "./Config";
 
 export enum Tileset
 {
@@ -25,11 +25,11 @@ export enum Tileset
 export default class Tile
 {
 
-    protected _tiles: Tile[] = [];
-    protected _sprite: Sprite;
-    protected _type: number = 0;
+    protected _type: number;
     protected _count: number[] = new Array(14);
     protected _empty: boolean = true;
+    protected _tiles: Tile[] = [];
+    protected _sprite: Sprite;
 
     protected showAnim: Task = new Task(async (task: Task) => {
         await task.wait(0.2, t => this._sprite.set({s: t * t}));
@@ -134,9 +134,10 @@ export default class Tile
         return locked;
     }
 
-    constructor(x: number = 0, y: number = 0, p?: Sprite)
+    constructor(x = 0, y = 0, type = 0, p?: Sprite)
     {
-        this._sprite = new Sprite({...Config.tile, n: "", x, y, f: this._type, p});
+        this._type = type;
+        this._sprite = new Sprite({...Config.tile, n: "", x, y, f: type, p});
     }
 
     over(): boolean

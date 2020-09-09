@@ -3,39 +3,58 @@ import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import Grid from "./Grid";
 import Player from "../core/Audio/Player";
 import Hud from "./Hud";
-import Tile, { Tileset } from "./Tile";
+import Tile from "./Tile";
 import rnd from "../core/Math/Rnd";
 import { InputState } from "../core/Engine/Input";
-import Config from "../config";
+import Config from "./Config";
+import Score from "./Score";
 
 export default class GameScene extends Object2D
 {
 
-    hud: Hud = new Hud();
-    grid: Grid = new Grid(6, 6);
+    hud = new Hud();
+    grid = new Grid(6, 6);
+    score = new Score();
+    store = "office_404";
+    params = new URLSearchParams(location.search);
 
-    onInput = (e: GameEvent<string, InputState>) => {
-        if (e.target === "Mouse0" && e.data[e.target])
+    get seed(): number
+    {
+        return parseInt(this.params.get("seed"));
+    }
+
+    set seed(value: number)
+    {
+        rnd.SEED = value;
+        this.params.set("seed", value.toString());
+        window.history.replaceState({}, '', `${location.pathname}?${this.params}`);
+    }
+
+    onInput = async (e: GameEvent<string, InputState>) => {
+        const seed = this.seed;
+        const {hud, grid, store} = this;
+        if (grid.active && e.target === "Mouse0" && e.data[e.target])
         {
-            this.grid.setTile(this.hud.tile);
+            await grid.setTile(hud.tile);
+            localStorage.setItem(store, JSON.stringify({hud, grid, seed}));
         }
     };
 
     onShow = (e: GameEvent<Tile, number>) => {
-        this.roll();
+        this.hud.type = this.roll();
         this.hud.tile.show();
     };
 
     onMerge = (e: GameEvent<Tile, number>) => {
-        this.score(e.target, e.data);
+        this.coin(e.target, e.data);
     };
 
     onClear = (e: GameEvent<Tile>) => {
         const tile = e.target;
-        this.score(tile);
+        this.coin(tile);
         if (!tile.isSafe)
         {
-            this.roll();
+            this.hud.type = this.roll();
             this.hud.tile.show();
         }
     };
@@ -47,38 +66,67 @@ export default class GameScene extends Object2D
     constructor()
     {
         super();
-        this
-            .add(this.hud)
-            .add(this.grid);
+        this.add(this.hud)
+            .add(this.grid)
+            .add(this.score);
         dispatcher
             .on("input", this.onInput)
             .on("show", this.onShow)
             .on("merge", this.onMerge)
             .on("clear", this.onClear)
             .on("all", this.onALL);
+//        this.load();
+        this.create(this.seed);
     }
 
-    score(tile: Tile, count: number = 1)
+    create(seed?: number)
     {
-        this.hud.coin += tile.type * count * 5;
-    }
-
-    roll()
-    {
-        const hud = this.hud;
-        const odds = Config.odds;
-        hud.move--;
-        let roll = rnd(99, 0, true);
-        for (let i = odds.length - 1; i > Tileset.BOX; i--)
+        this.seed = seed || Math.floor(Math.random() * 10000);
+        for (const tile of this.grid.tiles)
         {
-            if (roll < odds[i])
+            tile.type = this.roll(Config.init);
+        }
+        this.hud.load({
+            coin: 0,
+            move: 404,
+            type: this.roll(),
+            music: true
+        });
+    }
+
+    load()
+    {
+        try
+        {
+            const data = JSON.parse(localStorage.getItem(this.store));
+            this.seed = data.seed;
+            this.hud.load(data.hud);
+            this.grid.load(data.grid);
+        }
+        catch (e)
+        {
+        }
+    }
+
+    coin(tile: Tile, count: number = 1)
+    {
+        const coin = Config.coin[tile.type] * count;
+        this.score.score(tile, coin);
+        this.hud.coin += coin;
+    }
+
+    roll(odds = Config.odds): number
+    {
+        let roll = rnd(99);
+        for (let i = odds.length - 1; i > 0; i--)
+        {
+            if (odds[i] && roll < odds[i])
             {
-                hud.type = i;
-                return;
+                return i;
             }
             roll -= odds[i];
         }
-        hud.type = Tileset.BOX;
+        return 0;
     }
 
 }
