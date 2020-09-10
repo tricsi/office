@@ -3,11 +3,12 @@ import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import Grid from "./Grid";
 import Player from "../core/Audio/Player";
 import Hud from "./Hud";
-import Tile from "./Tile";
+import Tile, { Tileset } from "./Tile";
 import rnd from "../core/Math/Rnd";
 import { InputState } from "../core/Engine/Input";
 import Config from "./Config";
 import Score from "./Score";
+import Overlay from "./Overlay";
 
 export default class GameScene extends Object2D
 {
@@ -15,8 +16,10 @@ export default class GameScene extends Object2D
     hud = new Hud();
     grid = new Grid(6, 6);
     score = new Score();
+    overlay = new Overlay();
     store = "office_404";
     params = new URLSearchParams(location.search);
+    ended = false;
 
     get seed(): number
     {
@@ -31,22 +34,51 @@ export default class GameScene extends Object2D
     }
 
     onInput = async (e: GameEvent<string, InputState>) => {
-        const seed = this.seed;
-        const {hud, grid, store} = this;
-        if (grid.active && e.target === "Mouse0" && e.data[e.target])
+        if (e.target === "Mouse0" && e.data[e.target])
         {
-            await grid.setTile(hud.tile);
-            localStorage.setItem(store, JSON.stringify({hud, grid, seed}));
+            const seed = this.seed;
+            const {hud, grid, store} = this;
+            if (this.ended)
+            {
+                this.overlay.hide();
+                this.create();
+            }
+            else if (grid.active)
+            {
+                await grid.setTile(hud.tile);
+                if (!this.grid.check())
+                {
+                    this.ended = true;
+                    dispatcher.emit({name: "fired"});
+                    this.overlay.show("fired", false);
+                    return;
+                }
+                if (!this.hud.move)
+                {
+                    this.ended = true;
+                    dispatcher.emit({name: "promoted"});
+                    this.overlay.show("promoted", true);
+                    return;
+                }
+                localStorage.setItem(store, JSON.stringify({hud, grid, seed}));
+            }
         }
     };
 
-    onShow = (e: GameEvent<Tile, number>) => {
+    onPlace = () => {
         this.hud.type = this.roll();
         this.hud.tile.show();
     };
 
     onMerge = (e: GameEvent<Tile, number>) => {
-        this.coin(e.target, e.data);
+        const tile = e.target;
+        this.coin(tile, e.data);
+        if (tile.type === Tileset.PINATA) {
+            this.overlay.emit(0.4);
+            Player.play("pinata");
+        } else {
+            Player.play("coin");
+        }
     };
 
     onClear = (e: GameEvent<Tile>) => {
@@ -68,15 +100,16 @@ export default class GameScene extends Object2D
         super();
         this.add(this.hud)
             .add(this.grid)
-            .add(this.score);
+            .add(this.score)
+            .add(this.overlay);
         dispatcher
             .on("input", this.onInput)
-            .on("show", this.onShow)
+            .on("place", this.onPlace)
             .on("merge", this.onMerge)
             .on("clear", this.onClear)
             .on("all", this.onALL);
 //        this.load();
-        this.create(this.seed);
+        this.create();
     }
 
     create(seed?: number)
@@ -92,6 +125,7 @@ export default class GameScene extends Object2D
             type: this.roll(),
             music: true
         });
+        this.ended = false;
     }
 
     load()
@@ -102,6 +136,7 @@ export default class GameScene extends Object2D
             this.seed = data.seed;
             this.hud.load(data.hud);
             this.grid.load(data.grid);
+            this.ended = false;
         }
         catch (e)
         {
@@ -111,8 +146,11 @@ export default class GameScene extends Object2D
     coin(tile: Tile, count: number = 1)
     {
         const coin = Config.coin[tile.type] * count;
-        this.score.score(tile, coin);
-        this.hud.coin += coin;
+        if (coin)
+        {
+            this.score.score(tile, coin);
+            this.hud.coin += coin;
+        }
     }
 
     roll(odds = Config.odds): number

@@ -4,6 +4,7 @@ export default {
     tile: [1, 1],
     font: [1, 19],
     tiny: [1, 29],
-    icon: [167, 29]
+    icon: [167, 29],
+    ptc: [241, 1]
   }
 }

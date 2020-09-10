@@ -22,9 +22,11 @@ export default class Hud extends Object2D
 
     protected _data: HudData = {coin: 0, type: 1, move: 404, music: true};
     tile = new Tile(-40, -56);
-    moveTxt = new Txt({...Config.font, x: -30, y: -56, ls: 2, va: 1});
-    coinTxt = new Txt({...Config.font, x: 48, y: -56, ls: 2, va: 1, ha: 2});
-    infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Merge 3 objects");
+    moveLbl = new Txt({...Config.tiny, x: -30, y: -60, va: 1}, "Moves");
+    moveTxt = new Txt({...Config.font, x: -30, y: -53, va: 1});
+    coinLbl = new Txt({...Config.tiny, x: 48, y: -60, va: 1, ha: 2}, "Money");
+    coinTxt = new Txt({...Config.font, x: 48, y: -53, va: 1, ha: 2});
+    infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Merge 3 or more");
     twtIcon = new Sprite({...Config.icon, x: -40, y: 84, f: 2});
     sndIcon = new Sprite({...Config.icon, x: 40, y: 84});
 
@@ -111,7 +113,9 @@ export default class Hud extends Object2D
     render(ctx: Context)
     {
         ctx.add(this.tile.sprite)
+            .add(this.moveLbl)
             .add(this.moveTxt)
+            .add(this.coinLbl)
             .add(this.coinTxt)
             .add(this.infoTxt)
             .add(this.twtIcon)

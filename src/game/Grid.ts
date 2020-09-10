@@ -62,6 +62,11 @@ export default class Grid extends Object2D
         return this.tiles[this.height * y + x] as Tile;
     }
 
+    check(): number
+    {
+        return this.tiles.reduce((count, tile) => (tile.type > Tileset.EMPTY ? 0 : 1) + count, 0);
+    }
+
     async setTile(src: Tile)
     {
         const type = src.type;
@@ -84,10 +89,10 @@ export default class Grid extends Object2D
         }
         else if (type !== Tileset.SELL)
         {
-            // show
+            // place
             await src.moveTo(tile);
             tile.type = type;
-            dispatcher.emit({name: "show", target: tile});
+            dispatcher.emit({name: "place", target: tile});
             if (!tile.isMovable)
             {
                 await this.merge(tile);
@@ -130,13 +135,17 @@ export default class Grid extends Object2D
     async lock(tile: Tile)
     {
         let pinatas = this.tiles.filter(t => t.isMovable && t.isLocked);
-        await Promise.all(pinatas.map(t => t.lock()));
-        while (pinatas.length)
+        if (pinatas.length)
         {
-            let i = pinatas.length > 1 ? rnd(pinatas.length - 1, 0, true) : 0;
-            const pinata = pinatas.indexOf(tile) < 0 ? pinatas[i] : tile;
-            await this.merge(pinata);
-            pinatas = pinatas.filter(t => t.type && t !== pinata);
+            dispatcher.emit({name: "lock", target: tile, data: pinatas});
+            await Promise.all(pinatas.map(t => t.lock()));
+            while (pinatas.length)
+            {
+                let i = pinatas.length > 1 ? rnd(pinatas.length - 1, 0, true) : 0;
+                const pinata = pinatas.indexOf(tile) < 0 ? pinatas[i] : tile;
+                await this.merge(pinata);
+                pinatas = pinatas.filter(t => t.type && t !== pinata);
+            }
         }
     }
 

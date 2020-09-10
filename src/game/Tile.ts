@@ -17,7 +17,7 @@ export enum Tileset
     DUDE,
     BOSS,
     PINATA,
-    SAFE,
+    GOLD,
     SELL,
     WILD
 }
@@ -31,17 +31,17 @@ export default class Tile
     protected _tiles: Tile[] = [];
     protected _sprite: Sprite;
 
-    protected showAnim: Task = new Task(async (task: Task) => {
+    protected showAnim = new Task(async task => {
         await task.wait(0.2, t => this._sprite.set({s: t * t}));
         this._sprite.set({s: 1});
     });
 
-    protected hideAnim: Task = new Task(async (task: Task) => {
+    protected hideAnim = new Task(async task => {
         await task.wait(0.2, t => this._sprite.set({s: 1 - t * t}));
         this._sprite.set({s: 1});
     });
 
-    protected moveAnim: Task<Tile> = new Task<Tile>(async (task: Task<Tile>) => {
+    protected moveAnim = new Task<Tile>(async task => {
         this._empty = true;
         const {x, y} = this._sprite.param;
         const to = task.data._sprite.param;
@@ -60,10 +60,11 @@ export default class Tile
         }
     });
 
-    protected lockAnim: Task = new Task(async (task: Task) => {
-        await task.wait(0.3);
+    protected lockAnim = new Task(async task => {
+        await task.wait(0.2, t => this._sprite.set({r: Math.PI * t, s: 1 - t}));
         this.type = 10;
-        await task.wait(0.3);
+        await task.wait(0.2, t => this._sprite.set({r: Math.PI * (t + 1), s: t}));
+        this._sprite.set({r: 0, s: 1})
     });
 
     get type(): number
@@ -95,7 +96,7 @@ export default class Tile
 
     get isSafe(): boolean
     {
-        return this.type == Tileset.SAFE;
+        return this.type == Tileset.GOLD;
     }
 
     get isMovable(): boolean
@@ -187,14 +188,15 @@ export default class Tile
         return count;
     }
 
-    upgrade(type: number = this.type) {
+    upgrade(type: number = this.type)
+    {
         if (type < Tileset.CLOUD)
         {
             this.type = type + 1;
         }
-        else if (type < Tileset.SAFE)
+        else if (type < Tileset.GOLD)
         {
-            this.type = Tileset.SAFE;
+            this.type = Tileset.GOLD;
         }
         else if (type === Tileset.WILD)
         {
@@ -220,7 +222,8 @@ export default class Tile
         }
     }
 
-    async moveTo(tile: Tile) {
+    async moveTo(tile: Tile)
+    {
         await this.moveAnim.start(tile);
     }
 

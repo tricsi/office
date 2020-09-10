@@ -8,7 +8,7 @@ import Tile from "./Tile";
 export default class Score extends Object2D
 {
 
-    scoreTxt = new Txt({...Config.tiny, ha: 1, va: 1, l: 3});
+    scoreTxt = new Txt({...Config.tiny, c: "fff", ha: 1, va: 1, l: 3});
     scoreAnim = new Task<Tile>(async (task: Task<Tile>) => {
         const {x, y} = task.data.sprite.param;
         this.scoreTxt.set({x, y, a: 0});
