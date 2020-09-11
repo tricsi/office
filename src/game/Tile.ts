@@ -135,15 +135,15 @@ export default class Tile
         return locked;
     }
 
+    get isHover(): boolean
+    {
+        return this._sprite.box.has(pointer);
+    }
+
     constructor(x = 0, y = 0, type = 0, p?: Sprite)
     {
         this._type = type;
         this._sprite = new Sprite({...Config.tile, n: "", x, y, f: type, p});
-    }
-
-    over(): boolean
-    {
-        return this._sprite.box.has(pointer);
     }
 
     add(tile: Tile): Tile

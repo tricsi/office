@@ -2,33 +2,46 @@ import Object2D from "../core/Engine/Object2D";
 import Txt from "../core/Video/Txt";
 import Config from "./Config";
 import Context from "../core/Video/Context";
-import Tile from "./Tile";
-import Sprite from "../core/Video/Sprite";
+import Tile, { Tileset } from "./Tile";
+import { Task } from "../core/Engine/Scheduler";
 import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
-import { pointer } from "../core/Engine/Pointer";
-import Player from "../core/Audio/Player";
 
 export interface HudData
 {
     move: number;
     coin: number;
     type: number;
-    music: boolean;
+    item: number;
 }
 
 export default class Hud extends Object2D
 {
 
-    protected _data: HudData = {coin: 0, type: 1, move: 404, music: true};
-    tile = new Tile(-40, -56);
-    moveLbl = new Txt({...Config.tiny, x: -30, y: -60, va: 1}, "Moves");
-    moveTxt = new Txt({...Config.font, x: -30, y: -53, va: 1});
-    coinLbl = new Txt({...Config.tiny, x: 48, y: -60, va: 1, ha: 2}, "Money");
-    coinTxt = new Txt({...Config.font, x: 48, y: -53, va: 1, ha: 2});
-    infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Merge 3 or more");
-    twtIcon = new Sprite({...Config.icon, x: -40, y: 84, f: 2});
-    sndIcon = new Sprite({...Config.icon, x: 40, y: 84});
+    protected _data: HudData = {coin: 0, type: 1, move: 404, item: 12};
+    tile = new Tile(-40, -58);
+    shop = new Tile(0, 70);
+    moveLbl = new Txt({...Config.tiny, x: -30, y: -62, va: 1}, "Days");
+    moveTxt = new Txt({...Config.font, x: -30, y: -55, va: 1});
+    coinLbl = new Txt({...Config.tiny, x: 48, y: -62, va: 1, ha: 2}, "Money");
+    coinTxt = new Txt({...Config.font, x: 48, y: -55, va: 1, ha: 2});
+    infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Merge 3 objects");
+    priceTxt = new Txt({...Config.font, y: 84, va: 1, ha: 1}, "$9999");
+    infoAnim = new Task<string>(async task => {
+        await task.wait(0.2, t => this.infoTxt.set({a: 1  - t * t}));
+        this.infoTxt.text(task.data);
+        await task.wait(0.3, t => this.infoTxt.set({a: t * t}));
+    });
+    infoIdx = 0;
+    info = [
+        "Merge more",
+        "What is next?",
+        "You will be promoted",
+        "Need more space",
+        "Have fun",
+        "Sell gold bars any time!",
+        "Pinata party?",
+    ];
 
     get type(): number
     {
@@ -61,45 +74,44 @@ export default class Hud extends Object2D
     set coin(value: number)
     {
         this._data.coin = value;
+        this.enabled = this.enabled;
         this.coinTxt.text("$" + value);
     }
 
-    get music(): boolean
+    get price(): number
     {
-        return this._data.music;
+        return Config.price[this.item];
     }
 
-    set music(value: boolean)
+    get item(): number
     {
-        this._data.music = value;
-        this.sndIcon.set({f: value ? 0 : 1});
-        Player.mixer("master", value ? 1 : 0);
+        return this._data.item;
     }
 
-    onInput = async (e: GameEvent<string, InputState>) => {
-        if (e.target !== "Mouse0" || !e.data[e.target])
-        {
-            return;
-        }
-        if (this.sndIcon.box.has(pointer))
-        {
-            this.music = !this.music;
-        }
-        if (this.twtIcon.box.has(pointer))
-        {
-            const params = new URLSearchParams();
-            params.set("text", "Wellcome to the office!");
-            params.set("hashtags", "office404");
-            params.set("url", location.href);
-            window.open(`http://www.twitter.com/share?${params}`, '_blank');
-        }
-    };
+    set item(value: number)
+    {
+        this._data.item = value;
+        this.shop.type = value;
+        this.enabled = this.enabled;
+        this.priceTxt.text(value ? "$" + this.price : "Free");
+    }
+
+    get enabled(): boolean
+    {
+        return this.price <= this.coin;
+    }
+
+    set enabled(value: boolean)
+    {
+        const a = value ? 1 : 0.5;
+        this.shop.sprite.set({a});
+        this.priceTxt.set({a});
+    }
 
     constructor()
     {
         super();
         this.load(this._data);
-        dispatcher.on("input", this.onInput);
     }
 
     load(data: HudData)
@@ -107,19 +119,59 @@ export default class Hud extends Object2D
         this.type = data.type;
         this.coin = data.coin;
         this.move = data.move;
-        this.music = data.music;
+        this.item = data.item;
+    }
+
+    async buy(next: number)
+    {
+        const price = this.price;
+        const type = this.shop.type;
+        dispatcher.emit({name: "buy", target: this.shop, data: price});
+        await this.shop.moveTo(this.tile);
+        this.tile.type = type;
+        this.item = next;
+        this.coin -= price;
+        await this.shop.show();
+    }
+
+    show() {
+        this.tile.show();
+        switch (this.type)
+        {
+            case Tileset.PLANT:
+                this.infoAnim.start("Hmm... a plant?");
+                break;
+            case Tileset.DUDE:
+                this.infoAnim.start("Hey dude!");
+                break;
+            case Tileset.BOSS:
+                this.infoAnim.start("Bosses are annoying!");
+                break;
+            case Tileset.SELL:
+                this.infoAnim.start("You can sell something!");
+                break;
+            case Tileset.WILD:
+                this.infoAnim.start("Diamond merge anything!");
+                break;
+            default:
+                this.infoAnim.start(this.info[this.infoIdx]);
+                if (++this.infoIdx >= this.info.length) {
+                    this.infoIdx = 0;
+                }
+                break;
+        }
     }
 
     render(ctx: Context)
     {
         ctx.add(this.tile.sprite)
+            .add(this.shop.sprite)
             .add(this.moveLbl)
             .add(this.moveTxt)
             .add(this.coinLbl)
             .add(this.coinTxt)
             .add(this.infoTxt)
-            .add(this.twtIcon)
-            .add(this.sndIcon);
+            .add(this.priceTxt);
     }
 
     toJSON(): HudData

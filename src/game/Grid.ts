@@ -13,7 +13,6 @@ export default class Grid extends Object2D
     group: Sprite = new Sprite();
     back: Tiles = new Tiles({...Config.tile, x: 8, y: 8, p: this.group}, {w: 6, h: 6, m: "az"});
     tiles: Tile[] = [];
-    active: boolean = true;
 
     constructor(public width: number, public height: number)
     {
@@ -70,12 +69,11 @@ export default class Grid extends Object2D
     async setTile(src: Tile)
     {
         const type = src.type;
-        const tile = this.tiles.filter((t: Tile) => t.over()).pop() as Tile;
-        if (!tile || !this.active)
+        const tile = this.tiles.filter((t: Tile) => t.isHover).pop() as Tile;
+        if (!tile)
         {
             return;
         }
-        this.active = false;
         if (tile.type !== Tileset.EMPTY)
         {
             if (type === Tileset.SELL || tile.isSafe)
@@ -100,7 +98,6 @@ export default class Grid extends Object2D
             await this.lock(tile);
             await this.move(tile);
         }
-        this.active = true;
     }
 
     async move(tile: Tile)

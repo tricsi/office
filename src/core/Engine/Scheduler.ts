@@ -137,6 +137,7 @@ export class Task<T = any>
         if (this._resolve)
         {
             const resolve = this._resolve;
+            this._update && this._update(1);
             this._resolve = null;
             this._update = null;
             this._length = 0;

@@ -23,22 +23,19 @@ export default class Overlay extends Object2D
     }});
 
     showAnim = new Task(async task => {
-        const {back, txt1, txt2} = this;
         await task.wait(0.3, t => {
-            back.set({a: t});
-            txt1.set({a: t, s: t > 0.2 ? 3 - t * 2 : 0});
-            txt2.set({a: t, s: t > 0.6 ? 5 - t * 4 : 0});
+            this.back.set({a: t});
+            this.txt1.set({a: t, s: t > 0.2 ? 3 - t * 2 : 0});
+            this.txt2.set({a: t, s: t > 0.6 ? 5 - t * 4 : 0});
         });
-        txt1.set({a: 1, s: 1});
-        txt2.set({a: 1, s: 1});
     });
 
     hideAnim = new Task(async task => {
         await task.wait(0.3, t => {
             const a = 1 - t * t;
             this.back.set({a});
-            this.txt1.set({a}, null);
-            this.txt2.set({a}, null);
+            this.txt1.set({a});
+            this.txt2.set({a});
         });
     });
 

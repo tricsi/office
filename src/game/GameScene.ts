@@ -2,7 +2,7 @@ import Object2D from "../core/Engine/Object2D";
 import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import Grid from "./Grid";
 import Player from "../core/Audio/Player";
-import Hud from "./Hud";
+import Hud, { HudData } from "./Hud";
 import Tile, { Tileset } from "./Tile";
 import rnd from "../core/Math/Rnd";
 import { InputState } from "../core/Engine/Input";
@@ -10,73 +10,90 @@ import Config from "./Config";
 import Score from "./Score";
 import Overlay from "./Overlay";
 
+export interface GameData
+{
+    hud: HudData;
+    grid: number[];
+}
+
 export default class GameScene extends Object2D
 {
+
+    static store = "office_404";
+    static load(): GameData
+    {
+        try
+        {
+            return JSON.parse(localStorage.getItem(GameScene.store));
+        }
+        catch (e)
+        {
+        }
+        return null;
+    }
 
     hud = new Hud();
     grid = new Grid(6, 6);
     score = new Score();
     overlay = new Overlay();
-    store = "office_404";
-    params = new URLSearchParams(location.search);
+    active = true;
     ended = false;
-
-    get seed(): number
-    {
-        return parseInt(this.params.get("seed"));
-    }
-
-    set seed(value: number)
-    {
-        rnd.SEED = value;
-        this.params.set("seed", value.toString());
-        window.history.replaceState({}, '', `${location.pathname}?${this.params}`);
-    }
 
     onInput = async (e: GameEvent<string, InputState>) => {
         if (e.target === "Mouse0" && e.data[e.target])
         {
-            const seed = this.seed;
-            const {hud, grid, store} = this;
+            const {hud, grid} = this;
             if (this.ended)
             {
                 this.overlay.hide();
                 this.create();
             }
-            else if (grid.active)
+            else if (this.active)
             {
+                this.active = false;
                 await grid.setTile(hud.tile);
-                if (!this.grid.check())
+                if (hud.enabled && hud.shop.isHover)
                 {
+                    await hud.buy(this.roll(Config.shop));
+                }
+                if (!grid.check())
+                {
+                    this.clear();
                     this.ended = true;
                     dispatcher.emit({name: "fired"});
                     this.overlay.show("fired", false);
-                    return;
                 }
-                if (!this.hud.move)
+                else if (!hud.move)
                 {
+                    this.clear();
                     this.ended = true;
                     dispatcher.emit({name: "promoted"});
                     this.overlay.show("promoted", true);
-                    return;
                 }
-                localStorage.setItem(store, JSON.stringify({hud, grid, seed}));
+                else
+                {
+                    this.save();
+                }
+                this.active = true;
             }
         }
     };
 
     onPlace = () => {
         this.hud.type = this.roll();
-        this.hud.tile.show();
+        this.hud.show();
     };
 
     onMerge = (e: GameEvent<Tile, number>) => {
         const tile = e.target;
         this.coin(tile, e.data);
-        if (tile.type === Tileset.PINATA) {
+        if (tile.type === Tileset.PINATA)
+        {
             this.overlay.emit(0.4);
             Player.play("pinata");
-        } else {
+        }
+        else
+        {
             Player.play("coin");
         }
     };
@@ -95,7 +112,7 @@ export default class GameScene extends Object2D
         Player.play(e.name);
     };
 
-    constructor()
+    constructor(data?: GameData)
     {
         super();
         this.add(this.hud)
@@ -108,39 +125,37 @@ export default class GameScene extends Object2D
             .on("merge", this.onMerge)
             .on("clear", this.onClear)
             .on("all", this.onALL);
-//        this.load();
-        this.create();
+        if (data)
+        {
+            this.hud.load(data.hud);
+            this.grid.load(data.grid);
+        }
+        else
+        {
+            this.create();
+        }
     }
 
-    create(seed?: number)
+    create()
     {
-        this.seed = seed || Math.floor(Math.random() * 10000);
         for (const tile of this.grid.tiles)
         {
             tile.type = this.roll(Config.init);
         }
-        this.hud.load({
-            coin: 0,
-            move: 404,
-            type: this.roll(),
-            music: true
-        });
+        this.hud.load({coin: 0, type: 1, move: 404, item: 12});
         this.ended = false;
+        this.save();
     }
 
-    load()
+    save()
     {
-        try
-        {
-            const data = JSON.parse(localStorage.getItem(this.store));
-            this.seed = data.seed;
-            this.hud.load(data.hud);
-            this.grid.load(data.grid);
-            this.ended = false;
-        }
-        catch (e)
-        {
-        }
+        const {hud, grid} = this;
+        localStorage.setItem(GameScene.store, JSON.stringify({hud, grid}));
+    }
+
+    clear()
+    {
+        localStorage.removeItem(GameScene.store);
     }
 
     coin(tile: Tile, count: number = 1)

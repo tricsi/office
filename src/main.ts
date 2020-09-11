@@ -24,6 +24,7 @@ function update()
     scenes.forEach(s => s.update(scheduler.delta));
     scenes.forEach(s => s.render(ctx));
     ctx.flush();
+    gl.clear(gl.COLOR_BUFFER_BIT);
     shader.uniform("uProj", Camera.mat.data)
         .attrib("aUv", 2, ctx.uv)
         .attrib("aPos", 2, ctx.pos)
@@ -34,6 +35,7 @@ function update()
 on(image, "load", () => {
     scenes[0] = new LoadScene();
     gl.enable(gl.BLEND);
+    gl.clearColor(0, 0, 0, 0);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(shader.program);
     shader.buffer("indices", ctx.idx)
