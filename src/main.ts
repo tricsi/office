@@ -7,7 +7,7 @@ import Context from "./core/Video/Context";
 import Shader from "./core/Video/Shader";
 import scheduler from "./core/Engine/Scheduler";
 import Camera from "./core/Video/Camera";
-import { on } from "./core/utils";
+import { fs, on } from "./core/utils";
 import LoadScene from "./game/LoadScene";
 import state from "./game/State";
 
@@ -41,6 +41,7 @@ on(image, "load", () => {
     shader.buffer("indices", ctx.idx)
         .texture("sprite", image);
     update();
+    on(document, "click", fs);
 });
 
 image.src = texture;

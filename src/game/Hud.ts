@@ -4,8 +4,7 @@ import Config from "./Config";
 import Context from "../core/Video/Context";
 import Tile, { Tileset } from "./Tile";
 import { Task } from "../core/Engine/Scheduler";
-import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
-import { InputState } from "../core/Engine/Input";
+import dispatcher from "../core/Engine/Dispatcher";
 
 export interface HudData
 {
@@ -28,7 +27,7 @@ export default class Hud extends Object2D
     infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Merge 3 objects");
     priceTxt = new Txt({...Config.font, y: 84, va: 1, ha: 1}, "$9999");
     infoAnim = new Task<string>(async task => {
-        await task.wait(0.2, t => this.infoTxt.set({a: 1  - t * t}));
+        await task.wait(0.2, t => this.infoTxt.set({a: 1 - t * t}));
         this.infoTxt.text(task.data);
         await task.wait(0.3, t => this.infoTxt.set({a: t * t}));
     });
@@ -38,6 +37,7 @@ export default class Hud extends Object2D
         "What is next?",
         "You will be promoted",
         "Need more space",
+        "Buy better stuff",
         "Have fun",
         "Sell gold bars any time!",
         "Pinata party?",
@@ -134,7 +134,8 @@ export default class Hud extends Object2D
         await this.shop.show();
     }
 
-    show() {
+    show()
+    {
         this.tile.show();
         switch (this.type)
         {
@@ -151,11 +152,12 @@ export default class Hud extends Object2D
                 this.infoAnim.start("You can sell something!");
                 break;
             case Tileset.WILD:
-                this.infoAnim.start("Diamond merge anything!");
+                this.infoAnim.start("Diamond merge things!");
                 break;
             default:
                 this.infoAnim.start(this.info[this.infoIdx]);
-                if (++this.infoIdx >= this.info.length) {
+                if (++this.infoIdx >= this.info.length)
+                {
                     this.infoIdx = 0;
                 }
                 break;

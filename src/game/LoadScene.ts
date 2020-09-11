@@ -11,6 +11,7 @@ import { Task } from "../core/Engine/Scheduler";
 import { pointer } from "../core/Engine/Pointer";
 import Vec from "../core/Math/Vec";
 import Settings from "./Settings";
+import { SoundParam } from "../core/Audio/Sound";
 
 export default class LoadScene extends Object2D
 {
@@ -24,10 +25,11 @@ export default class LoadScene extends Object2D
     introAnim = new Task(async task => {
         const text = "Office";
         await task.wait(0.5);
-        await task.wait(1, t => this.logo.text(text.substr(0, Math.ceil(text.length * t))));
+        await task.wait(1.5, t => this.logo.text(text.substr(0, Math.ceil(text.length * t))));
         this.num.text("404!");
         await task.wait(0.3, t => this.num.set({s: 3.7 - 2 * t * t, a: t * t}));
-        await task.wait(0.3, t => {
+        await task.wait(0.5);
+        await task.wait(0.5, t => {
             const tt = t ** 4;
             this.logo.set({y: -80 * tt});
             this.num.set({y: -80 * tt - 10});
@@ -64,18 +66,27 @@ export default class LoadScene extends Object2D
         {
             dispatcher.off("input", this.onInput)
                 .off("pointer", this.onPointer);
+            const mid: SoundParam = ["sine", 0.2, [0.2, 0], 0];
+            const solo: SoundParam = ["triangle", 0.3, [0.2, 0.1], 0];
+            const bass: SoundParam = ["square", 0.2, [0.2, 0], 0];
             this.newTxt.text();
             this.loadTxt.text();
-            // document.fullscreenElement || await document.body.requestFullscreen();
             await Player.init();
             await Player.sound("place", ["sine", 0.3, [1, 0.1, 0], 0], [110, 15, 0]);
             await Player.sound("lock", ["triangle", 0.4, [0, 0.2], 0], [880, 220, 880]);
             await Player.music("clear", [[["square", 0.2, [0.2, 0], 0], "1a6,1c7,1e7", 0.05]]);
-            await Player.music("coin", [[["sine", 0.2, [0.2, 0], 0], "2a4,2a5", 0.05]]);
+            await Player.music("coin", [[mid, "2a4,2a5", 0.05]]);
+            await Player.music("buy", [[mid, "2a6,2e7,2a7", 0.05]]);
+            await Player.sound("fired", ["triangle", 1, [0.3, 0], [0.2, 0]], [880, 110]);
+            await Player.music("promoted", [
+                [mid, "1f5a5c6,3f5a5c6,1f5a5c6,3g5b5d6,4a5c6e6", 0.1],
+                [solo, "1f6,3f6,1f6,3g6,4a6", 0.1],
+                [bass, "4f3,1f3,3g3,4a3", 0.1]
+            ]);
             await Player.music("pinata", [
-                [["sine", 0.2, [0.2, 0], 0], "2g4b4d5,1g4b4d5,1g4b4d5,4c5e5g5", 0.1],
-                [["triangle", 0.3, [0.2, 0.1], 0], "2g6,1g6,1g6,4c7", 0.1],
-                [["square", 0.2, [0.2, 0], 0], "2g2,1g2,1g2,4c3", 0.1]
+                [mid, "2g4b4d5,1g4b4d5,1g4b4d5,4c5e5g5", 0.1],
+                [solo, "2g6,1g6,1g6,4c7", 0.1],
+                [bass, "2g2,1g2,1g2,4c3", 0.1]
             ]);
             Player.mixer("master", this.settings.volume);
             dispatcher.on("volume", (e) => Player.mixer("master", e.data));

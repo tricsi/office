@@ -51,10 +51,13 @@ export default class GameScene extends Object2D
             else if (this.active)
             {
                 this.active = false;
-                await grid.setTile(hud.tile);
                 if (hud.enabled && hud.shop.isHover)
                 {
                     await hud.buy(this.roll(Config.shop));
+                }
+                else
+                {
+                    await grid.setTile(hud.tile);
                 }
                 if (!grid.check())
                 {
