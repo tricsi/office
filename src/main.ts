@@ -10,6 +10,8 @@ import Camera from "./core/Video/Camera";
 import { fs, on } from "./core/utils";
 import LoadScene from "./game/LoadScene";
 import state from "./game/State";
+import Config from "./game/Config";
+import dispatcher from "./core/Engine/Dispatcher";
 
 const gl = Camera.gl;
 const ctx = new Context();
@@ -42,6 +44,8 @@ on(image, "load", () => {
         .texture("sprite", image);
     update();
     on(document, "click", fs);
+    //@ts-ignore
+    document.monetization && on(document.monetization, "monetizationstart", () => dispatcher.emit({name: "coil"}));
 });
 
 image.src = texture;

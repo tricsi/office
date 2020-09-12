@@ -10,9 +10,9 @@ import { Task } from "../core/Engine/Scheduler";
 export default class Settings extends Object2D
 {
 
-    volume = 1;
-    twtIcon = new Sprite({...Config.icon, x: -40, y: 84, f: 2, a: 0});
-    sndIcon = new Sprite({...Config.icon, x: 40, y: 84, a: 0});
+    sound = 1;
+    twtIcon = new Sprite({...Config.icon, x: -40, y: 84, f: 3, a: 0});
+    sndIcon = new Sprite({...Config.icon, x: 40, y: 84, f: 1, a: 0});
     showAnim = new Task(async task => task.wait(0.5, t => {
         const a = t * t;
         this.twtIcon.set({a});
@@ -26,9 +26,12 @@ export default class Settings extends Object2D
         }
         if (this.sndIcon.box.has(pointer))
         {
-            this.volume = this.volume ? 0 : 1;
-            this.sndIcon.set({f: 1 - this.volume});
-            dispatcher.emit({name: "volume", data: this.volume});
+            if (++this.sound > 2)
+            {
+                this.sound = 0;
+            }
+            this.sndIcon.set({f: this.sound});
+            dispatcher.emit({name: "sound", data: this.sound});
         }
         if (this.twtIcon.box.has(pointer))
         {

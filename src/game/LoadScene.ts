@@ -18,7 +18,7 @@ export default class LoadScene extends Object2D
 
     data: GameData;
     logo = new Txt({...Config.font, s: 2, c: "eee", va: 1, ha: 1});
-    num = new Txt({...Config.font, x: 34, y: -10, r: 0.3, c: "900", ha: 1});
+    num = new Txt({...Config.font, y: -10, r: 0.3, c: "900", ha: 1});
     newTxt = new Txt({...Config.font, y: 0, ha: 1});
     loadTxt = new Txt({...Config.font, y: 12, ha: 1});
     settings = new Settings();
@@ -27,7 +27,7 @@ export default class LoadScene extends Object2D
         await task.wait(0.5);
         await task.wait(1.5, t => this.logo.text(text.substr(0, Math.ceil(text.length * t))));
         this.num.text("404!");
-        await task.wait(0.3, t => this.num.set({s: 3.7 - 2 * t * t, a: t * t}));
+        await task.wait(0.3, t => this.num.set({x: t * 34, s: 3.7 - 2 * t * t, a: t * t}));
         await task.wait(0.5);
         await task.wait(0.5, t => {
             const tt = t ** 4;
@@ -50,6 +50,14 @@ export default class LoadScene extends Object2D
         await this.settings.showAnim.start();
     });
 
+    startAnim = new Task(async task => {
+        await task.wait(0.5, t => {
+            const a = 1 - t * t;
+            this.newTxt.set({a});
+            this.loadTxt.set({a});
+        });
+    });
+
     get load(): boolean
     {
         return this.loadTxt.box.has(pointer)
@@ -60,19 +68,28 @@ export default class LoadScene extends Object2D
         return this.newTxt.box.has(pointer)
     }
 
+    set sound(value: number)
+    {
+        Player.mixer("master", value > 0 ? 0.8 : 0);
+        Player.mixer("music", value === 1 ? 0.2 : 0);
+    }
+
     onInput = async (e: GameEvent<string, InputState>) => {
         const load = this.load;
         if (e.target === "Mouse0" && e.data[e.target] && (load || this.create))
         {
+            this.startAnim.start();
             dispatcher.off("input", this.onInput)
                 .off("pointer", this.onPointer);
             const mid: SoundParam = ["sine", 0.2, [0.2, 0], 0];
             const solo: SoundParam = ["triangle", 0.3, [0.2, 0.1], 0];
+            const cord: SoundParam = ["sawtooth", 0.3, [0.05, 0.07, 0.05], 0];
             const bass: SoundParam = ["square", 0.2, [0.2, 0], 0];
-            this.newTxt.text();
-            this.loadTxt.text();
+            const kick: SoundParam = ["sine", 0.3, [1, 0.1, 0], 0];
+            const snare: SoundParam = ["sine", 0.2, 0, [1, 0]];
             await Player.init();
-            await Player.sound("place", ["sine", 0.3, [1, 0.1, 0], 0], [110, 15, 0]);
+            this.sound = this.settings.sound;
+            await Player.sound("place", kick, [110, 15, 0]);
             await Player.sound("lock", ["triangle", 0.4, [0, 0.2], 0], [880, 220, 880]);
             await Player.music("clear", [[["square", 0.2, [0.2, 0], 0], "1a6,1c7,1e7", 0.05]]);
             await Player.music("coin", [[mid, "2a4,2a5", 0.05]]);
@@ -88,8 +105,18 @@ export default class LoadScene extends Object2D
                 [solo, "2g6,1g6,1g6,4c7", 0.1],
                 [bass, "2g2,1g2,1g2,4c3", 0.1]
             ]);
-            Player.mixer("master", this.settings.volume);
-            dispatcher.on("volume", (e) => Player.mixer("master", e.data));
+            await Player.music("music", [
+                [solo, "8|8|1a5,1,1a5,1,2d6,1e6,2f6,7,2e6,2,2e6,2c6,4g5,4,8f6,4e6,20,1a5,1,1a5,1,2d6,1e6,2f6,7,2e6,2,2e6,2c6,4g5,4,8d6,4c6,20|2", 0.125],
+                [cord, "8a4d5f5,8a4c5e5,8g4c5e5,8g4b4d5|10", 0.125],
+                [bass, "1a2,1a2,3f3,1d2,2,1a2,1a2,3e3,1c2,2,1g2,1g2,3e3,1c2,2,1g2,1g2,3d3,1b2,2|8", 0.125],
+                [kick, "1a3,7,1a3,1,1a3,5|20", 0.125],
+                [snare, "8|8|4,1a7,3|24", 0.125],
+            ]);
+
+            Player.play("music", true, "music");
+            dispatcher.on("sound", (e) => {
+                this.sound = e.data;
+            });
             state.scenes[1] = new GameScene(load ? this.data : null);
         }
     };
@@ -99,12 +126,18 @@ export default class LoadScene extends Object2D
         this.newTxt.set({c: this.create ? "0ff" : "fff"});
     };
 
+    onCoil = (e: GameEvent) => {
+        Config.price = Config.coil;
+        this.logo.set({c: "c90"});
+    };
+
     constructor()
     {
         super();
         this.data = GameScene.load();
         this.add(this.settings);
         this.introAnim.start();
+        dispatcher.on("coil", this.onCoil);
     }
 
     render(ctx: Context)

@@ -34,13 +34,10 @@ export default class Hud extends Object2D
     infoIdx = 0;
     info = [
         "Merge more",
-        "What is next?",
-        "You will be promoted",
-        "Need more space",
-        "Buy better stuff",
-        "Have fun",
-        "Sell gold bars any time!",
-        "Pinata party?",
+        "Buy better things",
+        "Subscribers have discount!",
+        "Collect the gold bars",
+        "Pinata party is cool",
     ];
 
     get type(): number
@@ -128,15 +125,22 @@ export default class Hud extends Object2D
         const type = this.shop.type;
         dispatcher.emit({name: "buy", target: this.shop, data: price});
         await this.shop.moveTo(this.tile);
-        this.tile.type = type;
         this.item = next;
         this.coin -= price;
+        this.type = type;
+        this.move++;
         await this.shop.show();
+        this.help();
     }
 
     show()
     {
         this.tile.show();
+        this.help();
+    }
+
+    help()
+    {
         switch (this.type)
         {
             case Tileset.PLANT:
@@ -152,7 +156,7 @@ export default class Hud extends Object2D
                 this.infoAnim.start("You can sell something!");
                 break;
             case Tileset.WILD:
-                this.infoAnim.start("Diamond merge things!");
+                this.infoAnim.start("Diamond merge all things!");
                 break;
             default:
                 this.infoAnim.start(this.info[this.infoIdx]);

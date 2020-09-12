@@ -49,8 +49,8 @@ export default class Sound {
     render(freq: number | number[], length: number = this.param[1], offset: number = 0) {
         this.set(this.osc.frequency, freq, length, offset);
         this.set(this.filter.detune, freq, length, offset);
-        this.set(this.oscVol.gain, this.param[2] || 0, length, offset);
-        this.set(this.srcVol.gain, this.param[3] || 0, length, offset);
+        this.set(this.oscVol.gain, freq ? this.param[2] || 0 : 0, length, offset);
+        this.set(this.srcVol.gain, freq ? this.param[3] || 0 : 0, length, offset);
     }
 
     start(time: number = this.param[1]) {
