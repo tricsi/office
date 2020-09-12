@@ -10,4 +10,6 @@ The Boss
 
 PS: No Pinata parties please!
 
+Coil subscribers have golden logo and discount on every buy.
+
 [[PLAY]](https://tricsi.github.io/office/build)
