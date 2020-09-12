@@ -34,7 +34,7 @@ export default class Hud extends Object2D
     infoIdx = 0;
     info = [
         "Merge more",
-        "Buy better things",
+        "Buy better stuff",
         "Subscribers have discount!",
         "Collect the gold bars",
         "Pinata party is cool",
@@ -156,7 +156,7 @@ export default class Hud extends Object2D
                 this.infoAnim.start("You can sell something!");
                 break;
             case Tileset.WILD:
-                this.infoAnim.start("Diamond merge all things!");
+                this.infoAnim.start("Diamond merge all stuff!");
                 break;
             default:
                 this.infoAnim.start(this.info[this.infoIdx]);
