@@ -94,7 +94,7 @@ export default class Tile
         return this.type == Tileset.WILD;
     }
 
-    get isSafe(): boolean
+    get isGold(): boolean
     {
         return this.type == Tileset.GOLD;
     }

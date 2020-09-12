@@ -104,10 +104,10 @@ export default class GameScene extends Object2D
     onClear = (e: GameEvent<Tile>) => {
         const tile = e.target;
         this.coin(tile);
-        if (!tile.isSafe)
+        if (!tile.isGold)
         {
             this.hud.type = this.roll();
-            this.hud.tile.show();
+            this.hud.show();
         }
     };
 

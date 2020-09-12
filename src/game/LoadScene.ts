@@ -21,7 +21,9 @@ export default class LoadScene extends Object2D
     num = new Txt({...Config.font, y: -10, r: 0.3, c: "900", ha: 1});
     newTxt = new Txt({...Config.font, y: 0, ha: 1});
     loadTxt = new Txt({...Config.font, y: 12, ha: 1});
+    clickTxt = new Txt({...Config.tiny, y: 12, ha: 1});
     settings = new Settings();
+
     introAnim = new Task(async task => {
         const text = "Office";
         await task.wait(0.5);
@@ -29,6 +31,12 @@ export default class LoadScene extends Object2D
         this.num.text("404!");
         await task.wait(0.3, t => this.num.set({x: t * 34, s: 3.7 - 2 * t * t, a: t * t}));
         await task.wait(0.5);
+        this.clickTxt.text("Click to start");
+        dispatcher.on("input", this.onInit);
+    });
+
+    startAnim = new Task(async task => {
+        this.clickTxt.text();
         await task.wait(0.5, t => {
             const tt = t ** 4;
             this.logo.set({y: -80 * tt});
@@ -50,7 +58,7 @@ export default class LoadScene extends Object2D
         await this.settings.showAnim.start();
     });
 
-    startAnim = new Task(async task => {
+    hideAnim = new Task(async task => {
         await task.wait(0.5, t => {
             const a = 1 - t * t;
             this.newTxt.set({a});
@@ -74,13 +82,11 @@ export default class LoadScene extends Object2D
         Player.mixer("music", value === 1 ? 0.2 : 0);
     }
 
-    onInput = async (e: GameEvent<string, InputState>) => {
-        const load = this.load;
-        if (e.target === "Mouse0" && e.data[e.target] && (load || this.create))
+    onInit = async (e: GameEvent<string, InputState>) => {
+        if (e.target === "Mouse0" && e.data[e.target])
         {
-            this.startAnim.start();
-            dispatcher.off("input", this.onInput)
-                .off("pointer", this.onPointer);
+            dispatcher.off("input", this.onInit);
+            this.clickTxt.text("Loading...");
             const mid: SoundParam = ["sine", 0.2, [0.2, 0], 0];
             const solo: SoundParam = ["triangle", 0.3, [0.2, 0.1], 0];
             const cord: SoundParam = ["sawtooth", 0.3, [0.05, 0.07, 0.05], 0];
@@ -88,7 +94,6 @@ export default class LoadScene extends Object2D
             const kick: SoundParam = ["sine", 0.3, [1, 0.1, 0], 0];
             const snare: SoundParam = ["sine", 0.2, 0, [1, 0]];
             await Player.init();
-            this.sound = this.settings.sound;
             await Player.sound("place", kick, [110, 15, 0]);
             await Player.sound("lock", ["triangle", 0.4, [0, 0.2], 0], [880, 220, 880]);
             await Player.music("clear", [[["square", 0.2, [0.2, 0], 0], "1a6,1c7,1e7", 0.05]]);
@@ -112,11 +117,20 @@ export default class LoadScene extends Object2D
                 [kick, "1a3,7,1a3,1,1a3,5|20", 0.125],
                 [snare, "8|8|4,1a7,3|24", 0.125],
             ]);
+            this.sound = this.settings.sound;
+            await this.startAnim.start();
+        }
+    };
 
+    onInput = async (e: GameEvent<string, InputState>) => {
+        const load = this.load;
+        if (e.target === "Mouse0" && e.data[e.target] && (load || this.create))
+        {
+            this.hideAnim.start();
+            dispatcher.off("input", this.onInput)
+                .off("pointer", this.onPointer);
             Player.play("music", true, "music");
-            dispatcher.on("sound", (e) => {
-                this.sound = e.data;
-            });
+            dispatcher.on("sound", (e) => this.sound = e.data);
             state.scenes[1] = new GameScene(load ? this.data : null);
         }
     };
@@ -146,7 +160,8 @@ export default class LoadScene extends Object2D
         ctx.add(this.logo)
             .add(this.num)
             .add(this.newTxt)
-            .add(this.loadTxt);
+            .add(this.loadTxt)
+            .add(this.clickTxt);
     }
 
 }

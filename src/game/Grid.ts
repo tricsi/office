@@ -76,7 +76,7 @@ export default class Grid extends Object2D
         }
         if (tile.type !== Tileset.EMPTY)
         {
-            if (type === Tileset.SELL || tile.isSafe)
+            if (type === Tileset.SELL || tile.isGold)
             {
                 // clear
                 await tile.clear();
