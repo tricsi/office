@@ -28,9 +28,9 @@ function update()
     ctx.flush();
     gl.clear(gl.COLOR_BUFFER_BIT);
     shader.uniform("uProj", Camera.mat.data)
-        .attrib("aUv", 2, ctx.uv)
-        .attrib("aPos", 2, ctx.pos)
-        .attrib("aColor", 4, ctx.color);
+        .attrib("aUv", 2, ctx.uv.slice(0, ctx.count * 8))
+        .attrib("aPos", 2, ctx.pos.slice(0, ctx.count * 8))
+        .attrib("aColor", 4, ctx.color.slice(0, ctx.count * 16));
     gl.drawElements(gl.TRIANGLES, ctx.count * 6, gl.UNSIGNED_SHORT, 0);
 }
 
