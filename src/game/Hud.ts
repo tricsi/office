@@ -24,7 +24,7 @@ export default class Hud extends Object2D
     moveTxt = new Txt({...Config.font, x: -30, y: -55, va: 1});
     coinLbl = new Txt({...Config.tiny, x: 48, y: -62, va: 1, ha: 2}, "Money");
     coinTxt = new Txt({...Config.font, x: 48, y: -55, va: 1, ha: 2});
-    infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Merge 3 objects");
+    infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Click on empty tiles");
     priceTxt = new Txt({...Config.font, y: 84, va: 1, ha: 1}, "$9999");
     infoAnim = new Task<string>(async task => {
         await task.wait(0.2, t => this.infoTxt.set({a: 1 - t * t}));
@@ -33,6 +33,7 @@ export default class Hud extends Object2D
     });
     infoIdx = 0;
     info = [
+        "Merge 3 objects",
         "Merge more",
         "Buy better stuff",
         "Subscribers have discount!",
