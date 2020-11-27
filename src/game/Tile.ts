@@ -189,7 +189,6 @@ export default class Tile
 
     async moveTo(tile: Tile)
     {
-        this._empty = true;
         const {x, y} = this._sprite.param;
         const to = tile._sprite.param;
         await Scheduler.delay(0.3, t => {
@@ -201,10 +200,7 @@ export default class Tile
             });
         });
         this._sprite.set({x, y, l: 0});
-        if (this._empty)
-        {
-            this.type = Tileset.EMPTY;
-        }
+        this.type = Tileset.EMPTY;
     }
 
     async merge(type = this.type)

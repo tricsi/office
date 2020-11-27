@@ -1,9 +1,6 @@
-export type Task = (delta: number) => void;
+import { now } from "../utils";
 
-export function now()
-{
-    return new Date().getTime() / 1000;
-}
+export type Task = (delta: number) => void;
 
 class Scheduler {
 

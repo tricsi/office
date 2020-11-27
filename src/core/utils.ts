@@ -6,6 +6,11 @@ export function on(element: any, event: string, callback: EventListenerOrEventLi
     element.addEventListener(event, callback, capture);
 }
 
+export function now()
+{
+    return new Date().getTime() / 1000;
+}
+
 export async function fs() {
     document.fullscreenElement || await document.body.requestFullscreen();
 }

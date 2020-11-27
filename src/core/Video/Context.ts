@@ -13,7 +13,7 @@ export default class Context
     idx: Uint16Array;
     color: Float32Array;
     count: number = 0;
-    layers: Sprite[][] = [];
+    layers = new Map<number, Sprite[]>();
 
     constructor(public margin: number = 1)
     {
@@ -38,7 +38,7 @@ export default class Context
         this.count = 0;
         for (const layer of layers)
         {
-            const sprites = this.layers[layer];
+            const sprites = this.layers.get(layer);
             if (sprites)
             {
                 (sort ? sprites.sort(sort) : sprites).forEach(sprite => this.addSprite(sprite));
@@ -58,11 +58,11 @@ export default class Context
         const {n, l} = sprite.param;
         if (n)
         {
-            if (!this.layers[l])
+            if (!this.layers.has(l))
             {
-                this.layers[l] = [];
+                this.layers.set(l, []);
             }
-            this.layers[l].push(sprite);
+            this.layers.get(l).push(sprite);
         }
         this.add(sprite.children);
         return this;
