@@ -9,3 +9,7 @@ export function on(element: any, event: string, callback: EventListenerOrEventLi
 export async function fs() {
     document.fullscreenElement || await document.body.requestFullscreen();
 }
+
+export function mobile() {
+    return navigator.userAgent.match(/(Android|iPhone|iPad|iPod)/i);
+}
