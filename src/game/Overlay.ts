@@ -3,9 +3,9 @@ import Config from "./Config";
 import Txt from "../core/Video/Txt";
 import Context from "../core/Video/Context";
 import Sprite from "../core/Video/Sprite";
-import { Task } from "../core/Engine/Scheduler";
 import Emitter from "../core/Video/Emitter";
 import rnd from "../core/Math/Rnd";
+import Scheduler from "../core/Engine/Scheduler";
 
 export default class Overlay extends Object2D
 {
@@ -22,23 +22,6 @@ export default class Overlay extends Object2D
         param.c = c[rnd(c.length -1, loop, true)];
     }});
 
-    showAnim = new Task(async task => {
-        await task.wait(0.3, t => {
-            this.back.set({a: t});
-            this.txt1.set({a: t, s: t > 0.2 ? 3 - t * 2 : 0});
-            this.txt2.set({a: t, s: t > 0.6 ? 5 - t * 4 : 0});
-        });
-    });
-
-    hideAnim = new Task(async task => {
-        await task.wait(0.3, t => {
-            const a = 1 - t * t;
-            this.back.set({a});
-            this.txt1.set({a});
-            this.txt2.set({a});
-        });
-    });
-
     constructor()
     {
         super();
@@ -51,7 +34,11 @@ export default class Overlay extends Object2D
             this.emitter.start();
         }
         this.txt2.text(text + "!");
-        await this.showAnim.start();
+        await Scheduler.delay(0.3, t => {
+            this.back.set({a: t});
+            this.txt1.set({a: t, s: t > 0.2 ? 3 - t * 2 : 0});
+            this.txt2.set({a: t, s: t > 0.6 ? 5 - t * 4 : 0});
+        });
     }
 
     async hide(anim: boolean = true)
@@ -62,7 +49,12 @@ export default class Overlay extends Object2D
         }
         if (anim)
         {
-            await this.hideAnim.start();
+            await Scheduler.delay(0.3, t => {
+                const a = 1 - t * t;
+                this.back.set({a});
+                this.txt1.set({a});
+                this.txt2.set({a});
+            });
         }
         this.back.set({a: 0});
         this.txt1.set({a: 0});

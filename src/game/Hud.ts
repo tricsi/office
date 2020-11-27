@@ -3,7 +3,7 @@ import Txt from "../core/Video/Txt";
 import Config from "./Config";
 import Context from "../core/Video/Context";
 import Tile, { Tileset } from "./Tile";
-import { Task } from "../core/Engine/Scheduler";
+import Scheduler from "../core/Engine/Scheduler";
 import dispatcher from "../core/Engine/Dispatcher";
 
 export interface HudData
@@ -26,13 +26,8 @@ export default class Hud extends Object2D
     coinTxt = new Txt({...Config.font, x: 48, y: -55, va: 1, ha: 2});
     infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Click on empty tiles");
     priceTxt = new Txt({...Config.font, y: 84, va: 1, ha: 1}, "$9999");
-    infoAnim = new Task<string>(async task => {
-        await task.wait(0.2, t => this.infoTxt.set({a: 1 - t * t}));
-        this.infoTxt.text(task.data);
-        await task.wait(0.3, t => this.infoTxt.set({a: t * t}));
-    });
     infoIdx = 0;
-    info = [
+    infos = [
         "Merge 3 objects",
         "Merge more",
         "Buy better stuff",
@@ -134,6 +129,12 @@ export default class Hud extends Object2D
         this.help();
     }
 
+    async info(text: string) {
+        await Scheduler.delay(0.2, t => this.infoTxt.set({a: 1 - t * t}));
+        this.infoTxt.text(text);
+        await Scheduler.delay(0.3, t => this.infoTxt.set({a: t * t}));
+    }
+
     show()
     {
         this.tile.show();
@@ -145,23 +146,23 @@ export default class Hud extends Object2D
         switch (this.type)
         {
             case Tileset.PLANT:
-                this.infoAnim.start("Hmm... a plant?");
+                this.info("Hmm... a plant?");
                 break;
             case Tileset.DUDE:
-                this.infoAnim.start("Hey dude!");
+                this.info("Hey dude!");
                 break;
             case Tileset.BOSS:
-                this.infoAnim.start("Bosses are annoying!");
+                this.info("Bosses are annoying!");
                 break;
             case Tileset.SELL:
-                this.infoAnim.start("You can sell something!");
+                this.info("You can sell something!");
                 break;
             case Tileset.WILD:
-                this.infoAnim.start("Diamond merge all stuff!");
+                this.info("Diamond merge all stuff!");
                 break;
             default:
-                this.infoAnim.start(this.info[this.infoIdx]);
-                if (++this.infoIdx >= this.info.length)
+                this.info(this.infos[this.infoIdx]);
+                if (++this.infoIdx >= this.infos.length)
                 {
                     this.infoIdx = 0;
                 }

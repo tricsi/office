@@ -5,7 +5,7 @@ import fragShader from "./shader/tiny.frag";
 import texture from "./asset/texture.png";
 import Context from "./core/Video/Context";
 import Shader from "./core/Video/Shader";
-import scheduler from "./core/Engine/Scheduler";
+import Scheduler from "./core/Engine/Scheduler";
 import Camera from "./core/Video/Camera";
 import { fs, on, mobile } from "./core/utils";
 import LoadScene from "./game/LoadScene";
@@ -21,8 +21,8 @@ const scenes = state.scenes;
 function update()
 {
     requestAnimationFrame(update);
-    scheduler.update();
-    scenes.forEach(s => s.update(scheduler.delta));
+    Scheduler.update();
+    scenes.forEach(s => s.update(Scheduler.delta));
     scenes.forEach(s => s.render(ctx));
     ctx.flush();
     gl.clear(gl.COLOR_BUFFER_BIT);

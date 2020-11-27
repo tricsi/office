@@ -1,5 +1,5 @@
 import Sprite from "../core/Video/Sprite";
-import { Task } from "../core/Engine/Scheduler";
+import Scheduler from "../core/Engine/Scheduler";
 import rnd from "../core/Math/Rnd";
 import { pointer } from "../core/Engine/Pointer";
 import Config from "./Config";
@@ -30,42 +30,6 @@ export default class Tile
     protected _empty: boolean = true;
     protected _tiles: Tile[] = [];
     protected _sprite: Sprite;
-
-    protected showAnim = new Task(async task => {
-        await task.wait(0.2, t => this._sprite.set({s: t * t}));
-        this._sprite.set({s: 1});
-    });
-
-    protected hideAnim = new Task(async task => {
-        await task.wait(0.2, t => this._sprite.set({s: 1 - t * t}));
-        this._sprite.set({s: 1});
-    });
-
-    protected moveAnim = new Task<Tile>(async task => {
-        this._empty = true;
-        const {x, y} = this._sprite.param;
-        const to = task.data._sprite.param;
-        await task.wait(0.3, t => {
-            const tt = 1 - t * t;
-            this._sprite.set({
-                x: to.x - ((to.x - x) * tt),
-                y: to.y - ((to.y - y) * tt),
-                l: 1
-            });
-        });
-        this._sprite.set({x, y, l: 0});
-        if (this._empty)
-        {
-            this.type = Tileset.EMPTY;
-        }
-    });
-
-    protected lockAnim = new Task(async task => {
-        await task.wait(0.2, t => this._sprite.set({r: Math.PI * t, s: 1 - t}));
-        this.type = 10;
-        await task.wait(0.2, t => this._sprite.set({r: Math.PI * (t + 1), s: t}));
-        this._sprite.set({r: 0, s: 1})
-    });
 
     get type(): number
     {
@@ -206,7 +170,8 @@ export default class Tile
 
     async show()
     {
-        await this.showAnim.start();
+        await Scheduler.delay(0.2, t => this._sprite.set({s: t * t}));
+        this._sprite.set({s: 1});
     }
 
     async move()
@@ -217,14 +182,29 @@ export default class Tile
             const tile = tiles[tiles.length > 1 ? rnd(tiles.length - 1, 0, true) : 0];
             const type = this.type;
             tile._empty = false;
-            await this.moveAnim.start(tile);
+            await this.moveTo(tile);
             tile.type = type;
         }
     }
 
     async moveTo(tile: Tile)
     {
-        await this.moveAnim.start(tile);
+        this._empty = true;
+        const {x, y} = this._sprite.param;
+        const to = tile._sprite.param;
+        await Scheduler.delay(0.3, t => {
+            const tt = 1 - t * t;
+            this._sprite.set({
+                x: to.x - ((to.x - x) * tt),
+                y: to.y - ((to.y - y) * tt),
+                l: 1
+            });
+        });
+        this._sprite.set({x, y, l: 0});
+        if (this._empty)
+        {
+            this.type = Tileset.EMPTY;
+        }
     }
 
     async merge(type = this.type)
@@ -237,7 +217,7 @@ export default class Tile
             }
             if (this !== t)
             {
-                tasks.push(t.moveAnim.start(this));
+                tasks.push(t.moveTo(this));
             }
             return true;
         });
@@ -246,11 +226,16 @@ export default class Tile
 
     async lock()
     {
-        await this.lockAnim.start();
+        await Scheduler.delay(0.2, t => this._sprite.set({r: Math.PI * t, s: 1 - t}));
+        this.type = 10;
+        await Scheduler.delay(0.2, t => this._sprite.set({r: Math.PI * (t + 1), s: t}));
+        this._sprite.set({r: 0, s: 1})
     }
 
     async clear()
     {
-        await this.hideAnim.start();
+        await Scheduler.delay(0.2, t => this._sprite.set({s: 1 - t * t}));
+        this._sprite.set({s: 1});
     }
+
 }

@@ -5,7 +5,7 @@ import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import { pointer } from "../core/Engine/Pointer";
 import Context from "../core/Video/Context";
-import { Task } from "../core/Engine/Scheduler";
+import Scheduler from "../core/Engine/Scheduler";
 
 export default class Settings extends Object2D
 {
@@ -13,11 +13,6 @@ export default class Settings extends Object2D
     sound = 1;
     twtIcon = new Sprite({...Config.icon, x: -40, y: 84, f: 3, a: 0});
     sndIcon = new Sprite({...Config.icon, x: 40, y: 84, f: 1, a: 0});
-    showAnim = new Task(async task => task.wait(0.5, t => {
-        const a = t * t;
-        this.twtIcon.set({a});
-        this.sndIcon.set({a});
-    }));
 
     onInput = async (e: GameEvent<string, InputState>) => {
         if (e.target !== "Mouse0" || !e.data[e.target])
@@ -53,6 +48,14 @@ export default class Settings extends Object2D
     {
         ctx.add(this.twtIcon)
             .add(this.sndIcon);
+    }
+
+    async show() {
+        await Scheduler.delay(0.5, t => {
+            const a = t * t;
+            this.twtIcon.set({a});
+            this.sndIcon.set({a});
+        });
     }
 
 }

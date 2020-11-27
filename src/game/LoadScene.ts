@@ -7,7 +7,7 @@ import Object2D from "../core/Engine/Object2D";
 import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import state from "./State";
-import { Task } from "../core/Engine/Scheduler";
+import Scheduler from "../core/Engine/Scheduler";
 import { pointer } from "../core/Engine/Pointer";
 import Vec from "../core/Math/Vec";
 import Settings from "./Settings";
@@ -23,48 +23,7 @@ export default class LoadScene extends Object2D
     loadTxt = new Txt({...Config.font, y: 12, ha: 1});
     clickTxt = new Txt({...Config.tiny, y: 12, ha: 1});
     settings = new Settings();
-
-    introAnim = new Task(async task => {
-        const text = "Office";
-        await task.wait(0.5);
-        await task.wait(1.5, t => this.logo.text(text.substr(0, Math.ceil(text.length * t))));
-        this.num.text("404!");
-        await task.wait(0.3, t => this.num.set({x: t * 34, s: 3.7 - 2 * t * t, a: t * t}));
-        await task.wait(0.5);
-        this.clickTxt.text("Click to start");
-        dispatcher.on("input", this.onInit);
-    });
-
-    startAnim = new Task(async task => {
-        this.clickTxt.text();
-        await task.wait(0.5, t => {
-            const tt = t ** 4;
-            this.logo.set({y: -80 * tt});
-            this.num.set({y: -80 * tt - 10});
-        });
-        this.newTxt.text("New game");
-        if (this.data)
-        {
-            this.newTxt.set({y: -12});
-            this.loadTxt.text("Continue");
-        }
-        await task.wait(0.3, t => {
-            this.newTxt.set({a: t * t});
-            this.loadTxt.set({a: t * t});
-        });
-        dispatcher
-            .on("input", this.onInput)
-            .on("pointer", this.onPointer);
-        await this.settings.showAnim.start();
-    });
-
-    hideAnim = new Task(async task => {
-        await task.wait(0.5, t => {
-            const a = 1 - t * t;
-            this.newTxt.set({a});
-            this.loadTxt.set({a});
-        });
-    });
+    clicked = false;
 
     get load(): boolean
     {
@@ -86,6 +45,7 @@ export default class LoadScene extends Object2D
         if (e.target === "Mouse0" && e.data[e.target])
         {
             dispatcher.off("input", this.onInit);
+            this.clicked = true;
             this.clickTxt.text("Loading...");
             const mid: SoundParam = ["sine", 0.2, [0.2, 0], 0];
             const solo: SoundParam = ["triangle", 0.3, [0.2, 0.1], 0];
@@ -118,7 +78,7 @@ export default class LoadScene extends Object2D
                 [snare, "8|8|4,1a7,3|24", 0.125],
             ]);
             this.sound = this.settings.sound;
-            await this.startAnim.start();
+            await this.start();
         }
     };
 
@@ -126,7 +86,7 @@ export default class LoadScene extends Object2D
         const load = this.load;
         if (e.target === "Mouse0" && e.data[e.target] && (load || this.create))
         {
-            this.hideAnim.start();
+            this.hide();
             dispatcher.off("input", this.onInput)
                 .off("pointer", this.onPointer);
             Player.play("music", true, "music");
@@ -150,8 +110,51 @@ export default class LoadScene extends Object2D
         super();
         this.data = GameScene.load();
         this.add(this.settings);
-        this.introAnim.start();
-        dispatcher.on("coil", this.onCoil);
+        this.intro();
+        dispatcher.on("coil", this.onCoil)
+            .on("input", this.onInit);
+    }
+
+    async intro() {
+        const text = "Office";
+        const stop = () => this.clicked;
+        await Scheduler.delay(0.5, undefined, stop);
+        await Scheduler.delay(1.5, t => this.logo.text(text.substr(0, Math.ceil(text.length * t))), stop);
+        this.num.text("404!");
+        await Scheduler.delay(0.3, t => this.num.set({x: t * 34, s: 3.7 - 2 * t * t, a: t * t}), stop);
+        await Scheduler.delay(0.5, undefined, stop);
+        !this.clicked && this.clickTxt.text("Click to start");
+    }
+
+    async start() {
+        this.clickTxt.text();
+        await Scheduler.delay(0.5, t => {
+            const tt = t ** 4;
+            this.logo.set({y: -80 * tt});
+            this.num.set({y: -80 * tt - 10});
+        });
+        this.newTxt.text("New game");
+        if (this.data)
+        {
+            this.newTxt.set({y: -12});
+            this.loadTxt.text("Continue");
+        }
+        await Scheduler.delay(0.3, t => {
+            this.newTxt.set({a: t * t});
+            this.loadTxt.set({a: t * t});
+        });
+        dispatcher
+            .on("input", this.onInput)
+            .on("pointer", this.onPointer);
+        await this.settings.show();
+    }
+
+    async hide() {
+        await Scheduler.delay(0.5, t => {
+            const a = 1 - t * t;
+            this.newTxt.set({a});
+            this.loadTxt.set({a});
+        });
     }
 
     render(ctx: Context)
