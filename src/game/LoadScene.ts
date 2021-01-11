@@ -160,11 +160,7 @@ export default class LoadScene extends Object2D
     render(ctx: Context)
     {
         super.render(ctx);
-        ctx.add(this.logo)
-            .add(this.num)
-            .add(this.newTxt)
-            .add(this.loadTxt)
-            .add(this.clickTxt);
+        ctx.add(this.logo, this.num, this.newTxt, this.loadTxt, this.clickTxt);
     }
 
 }

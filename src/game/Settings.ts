@@ -46,8 +46,7 @@ export default class Settings extends Object2D
 
     render(ctx: Context)
     {
-        ctx.add(this.twtIcon)
-            .add(this.sndIcon);
+        ctx.add(this.twtIcon, this.sndIcon);
     }
 
     async show() {

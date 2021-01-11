@@ -172,14 +172,7 @@ export default class Hud extends Object2D
 
     render(ctx: Context)
     {
-        ctx.add(this.tile.sprite)
-            .add(this.shop.sprite)
-            .add(this.moveLbl)
-            .add(this.moveTxt)
-            .add(this.coinLbl)
-            .add(this.coinTxt)
-            .add(this.infoTxt)
-            .add(this.priceTxt);
+        ctx.add(this.tile.sprite, this.shop.sprite, this.moveLbl, this.moveTxt, this.coinLbl, this.coinTxt, this.infoTxt, this.priceTxt);
     }
 
     toJSON(): HudData

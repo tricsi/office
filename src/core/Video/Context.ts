@@ -48,23 +48,23 @@ export default class Context
         return this;
     }
 
-    add(sprite: Sprite | Sprite[]): Context
+    add(...sprites: Sprite[]): Context
     {
-        if (sprite instanceof Array)
-        {
-            sprite.forEach(s => this.add(s));
-            return this;
-        }
-        const {n, l} = sprite.param;
-        if (n)
-        {
-            if (!this.layers.has(l))
+        sprites.forEach(sprite => {
+            const {n, l} = sprite.param;
+            if (n)
             {
-                this.layers.set(l, []);
+                if (!this.layers.has(l))
+                {
+                    this.layers.set(l, []);
+                }
+                this.layers.get(l).push(sprite);
             }
-            this.layers.get(l).push(sprite);
-        }
-        this.add(sprite.children);
+            if (sprite.children.length)
+            {
+                this.add(...sprite.children);
+            }
+        });
         return this;
     }
 

@@ -68,10 +68,7 @@ export default class Overlay extends Object2D
 
     render(ctx: Context)
     {
-        ctx.add(this.back)
-            .add(this.emitter.particles)
-            .add(this.txt1)
-            .add(this.txt2);
+        ctx.add(this.back, this.txt1, this.txt2, ...this.emitter.particles);
     }
 
     update(delta: number)
