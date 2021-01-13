@@ -22,7 +22,6 @@ export default class Txt extends Sprite
     constructor(param: TxtParam, text: string = "")
     {
         super(param);
-        const {n} = this.param;
         this.font = {ha: 0, va: 0, ls: 1, lg: 1, ...this.param, r: 0, s: 1, sx: 0, sy: 0, c: "ffff", p: this};
         this.text(text);
     }
@@ -34,12 +33,10 @@ export default class Txt extends Sprite
         let y = 0,
             index = 0,
             width = 0;
-        text.split("\n").forEach((line, i) => {
+        for (const line of text.split("\n")) {
             let x = 0;
-            y = (h + lg) * i;
             for (let j = 0; j < line.length; j++)
             {
-                x = (w + ls) * j;
                 const f = Txt.idx.indexOf(line.charAt(j).toUpperCase());
                 if (f >= 0) {
                     children.length > index
@@ -47,10 +44,12 @@ export default class Txt extends Sprite
                         : new Sprite({...font, f, x, y});
                     index++;
                 }
+                x += w + ls;
             }
+            y += h + lg;
             width = Math.max(x, width);
-        });
-        this.set({n: "", px: Math.round(width * ha / 2), py: Math.round((y + h) * va / 2)});
+        }
+        this.set({n: "", px: Math.round(width * ha / 2), py: Math.round((y - lg) * va / 2)});
         children.length = index;
     }
 
