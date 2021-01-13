@@ -1,17 +1,28 @@
 import Vec from "../Math/Vec";
-import { $ } from "../utils";
+import { $, on } from "../utils";
 import Trans from "./Trans";
 
 class Camera extends Trans {
 
     canvas: HTMLCanvasElement = $("#game") as HTMLCanvasElement;
     gl: WebGLRenderingContext = this.canvas.getContext("webgl");
+    width = this.canvas.width;
+    height = this.canvas.height;
 
     constructor() {
         super();
-        const { width, height } = this.canvas;
-        this.gl.viewport(0, 0, width, height);
-        this.compute();
+        this.resize();
+        on(window, "resize", () => this.resize());
+    }
+
+    resize() {
+        const canvas = this.canvas;
+        const {width, height} = this;
+        const s = Math.ceil(canvas.clientWidth / width);
+        canvas.width = width * s;
+        canvas.height = height * s;
+        this.gl.viewport(0, 0, canvas.width, canvas.height);
+        this.set({s});
     }
 
     compute() {

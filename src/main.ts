@@ -34,17 +34,18 @@ function update()
 }
 
 on(image, "load", () => {
+    const doc = document;
     scenes[0] = new LoadScene();
     gl.enable(gl.BLEND);
-    gl.clearColor(0, 0, 0, 0);
+    gl.clearColor(0, 0, 0, 1);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(shader.program);
     shader.buffer("indices", ctx.idx)
         .texture("sprite", image);
     update();
-    mobile() && on(document, "click", fs);
+    on(doc, "click", () => mobile() && fs());
     //@ts-ignore
-    document.monetization && on(document.monetization, "monetizationstart", () => dispatcher.emit({name: "coil"}));
+    doc.monetization && on(doc.monetization, "monetizationstart", () => dispatcher.emit({name: "coil"}));
 });
 
 image.src = texture;
