@@ -15,6 +15,8 @@ export interface TxtParam extends SpriteParam
 export default class Txt extends Sprite
 {
 
+    static idx = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ,.?!$";
+
     font: TxtParam;
 
     constructor(param: TxtParam, text: string = "")
@@ -28,62 +30,26 @@ export default class Txt extends Sprite
     text(text: string = "")
     {
         const {children, font} = this;
-        let x = 0,
-            y = 0,
+        const {w, h, ha, va, ls, lg} = font;
+        let y = 0,
             index = 0,
             width = 0;
-        let {w, h, ha, va, ls, lg} = font;
-        w += ls;
-        for (let i = 0; i < text.length; i++)
-        {
-            let f = text.charCodeAt(i);
-            switch (f)
+        text.split("\n").forEach((line, i) => {
+            let x = 0;
+            y = (h + lg) * i;
+            for (let j = 0; j < line.length; j++)
             {
-                case 10:
-                    y += h + lg;
-                    x = font.x;
-                    continue;
-                case 33:
-                    f = 39;
-                    break;
-                case 36:
-                    f = 40;
-                    break;
-                case 44:
-                    f = 36;
-                    break;
-                case 46:
-                    f = 37;
-                    break;
-                case 63:
-                    f = 38;
-                    break;
-                default:
-                    if (f >= 48 && f <= 57)
-                    {
-                        f -= 48;
-                    }
-                    else if (f >= 97 && f <= 122)
-                    {
-                        f -= 87;
-                    }
-                    else if (f >= 65 && f <= 90)
-                    {
-                        f -= 55;
-                    }
-                    else
-                    {
-                        x += w;
-                        continue;
-                    }
+                x = (w + ls) * j;
+                const f = Txt.idx.indexOf(line.charAt(j).toUpperCase());
+                if (f >= 0) {
+                    children.length > index
+                        ? children[index].set({f, x, y})
+                        : new Sprite({...font, f, x, y});
+                    index++;
+                }
             }
-            children.length > index
-                ? children[index].set({f, x, y})
-                : new Sprite({...font, f, x, y});
-            x += w;
             width = Math.max(x, width);
-            index++;
-        }
+        });
         this.set({n: "", px: Math.round(width * ha / 2), py: Math.round((y + h) * va / 2)});
         children.length = index;
     }
