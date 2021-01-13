@@ -6,26 +6,24 @@ import Tile, { Tileset } from "./Tile";
 import Scheduler from "../core/Engine/Scheduler";
 import dispatcher from "../core/Engine/Dispatcher";
 
-export interface HudData
-{
+export interface HudData {
     move: number;
     coin: number;
     type: number;
     item: number;
 }
 
-export default class Hud extends Object2D
-{
+export default class Hud extends Object2D {
 
-    protected _data: HudData = {coin: 0, type: 1, move: 404, item: 12};
+    protected _data: HudData = { coin: 0, type: 1, move: 404, item: 12 };
     tile = new Tile(-40, -58);
     shop = new Tile(0, 70);
-    moveLbl = new Txt({...Config.tiny, x: -30, y: -62, va: 1}, "Days");
-    moveTxt = new Txt({...Config.font, x: -30, y: -55, va: 1});
-    coinLbl = new Txt({...Config.tiny, x: 48, y: -62, va: 1, ha: 2}, "Money");
-    coinTxt = new Txt({...Config.font, x: 48, y: -55, va: 1, ha: 2});
-    infoTxt = new Txt({...Config.tiny, y: 52, ha: 1}, "Click on empty tiles");
-    priceTxt = new Txt({...Config.font, y: 84, va: 1, ha: 1}, "$9999");
+    moveLbl = new Txt({ ...Config.tiny, x: -30, y: -62, va: 1 }, "Days");
+    moveTxt = new Txt({ ...Config.font, x: -30, y: -55, va: 1 });
+    coinLbl = new Txt({ ...Config.tiny, x: 48, y: -62, va: 1, ha: 2 }, "Money");
+    coinTxt = new Txt({ ...Config.font, x: 48, y: -55, va: 1, ha: 2 });
+    infoTxt = new Txt({ ...Config.tiny, y: 52, ha: 1 }, "Click on empty tiles");
+    priceTxt = new Txt({ ...Config.font, y: 84, va: 1, ha: 1 }, "$9999");
     infoIdx = 0;
     infos = [
         "Merge 3 objects",
@@ -36,90 +34,76 @@ export default class Hud extends Object2D
         "Pinata party is cool",
     ];
 
-    get type(): number
-    {
+    get type(): number {
         return this._data.type;
     }
 
-    set type(value: number)
-    {
+    set type(value: number) {
         this._data.type = value;
         this.tile.type = value;
         this.move--;
     }
 
-    get move(): number
-    {
+    get move(): number {
         return this._data.move;
     }
 
-    set move(value: number)
-    {
+    set move(value: number) {
         this._data.move = value;
         this.moveTxt.text(value.toString());
     }
 
-    get coin(): number
-    {
+    get coin(): number {
         return this._data.coin;
     }
 
-    set coin(value: number)
-    {
+    set coin(value: number) {
         this._data.coin = value;
         this.enabled = this.enabled;
         this.coinTxt.text("$" + value);
     }
 
-    get price(): number
-    {
+    get price(): number {
         return Config.price[this.item];
     }
 
-    get item(): number
-    {
+    get item(): number {
         return this._data.item;
     }
 
-    set item(value: number)
-    {
+    set item(value: number) {
         this._data.item = value;
         this.shop.type = value;
         this.enabled = this.enabled;
         this.priceTxt.text(value ? "$" + this.price : "Free");
     }
 
-    get enabled(): boolean
-    {
+    get enabled(): boolean {
         return this.price <= this.coin;
     }
 
-    set enabled(value: boolean)
-    {
+    set enabled(value: boolean) {
         const a = value ? 1 : 0.5;
-        this.shop.sprite.set({a});
-        this.priceTxt.set({a});
+        this.shop.sprite.set({ a });
+        this.priceTxt.set({ a });
     }
 
-    constructor()
-    {
+    constructor() {
         super();
         this.load(this._data);
     }
 
-    load(data: HudData)
-    {
+    load(data: HudData) {
         this.type = data.type;
         this.coin = data.coin;
         this.move = data.move;
         this.item = data.item;
     }
 
-    async buy(next: number)
-    {
+    async buy(next: number) {
         const price = this.price;
         const type = this.shop.type;
-        dispatcher.emit({name: "buy", target: this.shop, data: price});
+        dispatcher.emit({ name: "buy", target: this.shop, data: price });
         await this.shop.moveTo(this.tile);
         this.item = next;
         this.coin -= price;
@@ -130,21 +114,18 @@ export default class Hud extends Object2D
     }
 
     async info(text: string) {
-        await Scheduler.delay(0.2, t => this.infoTxt.set({a: 1 - t * t}));
+        await Scheduler.delay(0.2, t => this.infoTxt.set({ a: 1 - t * t }));
         this.infoTxt.text(text);
-        await Scheduler.delay(0.3, t => this.infoTxt.set({a: t * t}));
+        await Scheduler.delay(0.3, t => this.infoTxt.set({ a: t * t }));
     }
 
-    show()
-    {
+    show() {
         this.tile.show();
         this.help();
     }
 
-    help()
-    {
-        switch (this.type)
-        {
+    help() {
+        switch (this.type) {
             case Tileset.PLANT:
                 this.info("Hmm... a plant?");
                 break;
@@ -162,21 +143,18 @@ export default class Hud extends Object2D
                 break;
             default:
                 this.info(this.infos[this.infoIdx]);
-                if (++this.infoIdx >= this.infos.length)
-                {
+                if (++this.infoIdx >= this.infos.length) {
                     this.infoIdx = 0;
                 }
                 break;
         }
     }
 
-    render(ctx: Context)
-    {
+    render(ctx: Context) {
         ctx.add(this.tile.sprite, this.shop.sprite, this.moveLbl, this.moveTxt, this.coinLbl, this.coinTxt, this.infoTxt, this.priceTxt);
     }
 
-    toJSON(): HudData
-    {
+    toJSON(): HudData {
         return this._data;
     }
 

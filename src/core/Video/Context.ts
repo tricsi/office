@@ -5,8 +5,7 @@ export type RGBA = [number, number, number, number];
 
 const MAX_SPRITE = 16384;
 
-export default class Context
-{
+export default class Context {
 
     uv: Float32Array;
     pos: Float32Array;
@@ -15,16 +14,14 @@ export default class Context
     count: number = 0;
     layers = new Map<number, Sprite[]>();
 
-    constructor(public margin: number = 1)
-    {
+    constructor(public margin: number = 1) {
         const index = [0, 1, 2, 2, 1, 3];
         const length = index.length;
         this.uv = new Float32Array(MAX_SPRITE * 8);
         this.pos = new Float32Array(MAX_SPRITE * 8);
         this.idx = new Uint16Array(MAX_SPRITE * length);
         this.color = new Float32Array(MAX_SPRITE * 16);
-        for (let i = 0; i < this.idx.length; i++)
-        {
+        for (let i = 0; i < this.idx.length; i++) {
             const offset = Math.floor(i / length) * 4;
             this.idx[i] = index[i % length] + offset;
         }
@@ -33,14 +30,11 @@ export default class Context
     flush(
         sort?: (a: Sprite, b: Sprite) => number,
         layers: number[] | IterableIterator<number> = this.layers.keys()
-    ): Context
-    {
+    ): Context {
         this.count = 0;
-        for (const layer of layers)
-        {
+        for (const layer of layers) {
             const sprites = this.layers.get(layer);
-            if (sprites)
-            {
+            if (sprites) {
                 (sort ? sprites.sort(sort) : sprites).forEach(sprite => this.addSprite(sprite));
                 sprites.length = 0;
             }
@@ -48,43 +42,35 @@ export default class Context
         return this;
     }
 
-    add(...sprites: Sprite[]): Context
-    {
+    add(...sprites: Sprite[]): Context {
         sprites.forEach(sprite => {
-            const {n, l} = sprite.param;
-            if (n)
-            {
-                if (!this.layers.has(l))
-                {
+            const { n, l } = sprite.param;
+            if (n) {
+                if (!this.layers.has(l)) {
                     this.layers.set(l, []);
                 }
                 this.layers.get(l).push(sprite);
             }
-            if (sprite.children.length)
-            {
+            if (sprite.children.length) {
                 this.add(...sprite.children);
             }
         });
         return this;
     }
 
-    protected addSprite(sprite: Sprite)
-    {
+    protected addSprite(sprite: Sprite) {
         const param = sprite.param;
-        if (param.n in texture.frames && this.count < MAX_SPRITE)
-        {
+        if (param.n in texture.frames && this.count < MAX_SPRITE) {
             this.addUv(param);
             this.pos.set(sprite.mesh, this.count * 8);
             let i = 16 * this.count++;
-            for (let j = 0; j < 4; j++)
-            {
+            for (let j = 0; j < 4; j++) {
                 this.color.set(sprite.tint, j * 4 + i);
             }
         }
     }
 
-    protected addUv({n, f, w, h}: SpriteParam)
-    {
+    protected addUv({ n, f, w, h }: SpriteParam) {
         const [sw, sh] = texture.size;
         const p = this.margin / sw;
         let [x, y] = (texture.frames as any)[n];

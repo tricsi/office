@@ -7,29 +7,29 @@ import { pointer } from "../core/Engine/Pointer";
 import Context from "../core/Video/Context";
 import Scheduler from "../core/Engine/Scheduler";
 
-export default class Settings extends Object2D
-{
+export default class Settings extends Object2D {
 
     sound = 1;
-    twtIcon = new Sprite({...Config.icon, x: -40, y: 84, f: 3, a: 0});
-    sndIcon = new Sprite({...Config.icon, x: 40, y: 84, f: 1, a: 0});
+    twtIcon = new Sprite({ ...Config.icon, x: -40, y: 84, f: 3, a: 0 });
+    sndIcon = new Sprite({ ...Config.icon, x: 40, y: 84, f: 1, a: 0 });
+
+    constructor() {
+        super();
+        dispatcher.on("input", this.onInput);
+    }
 
     onInput = async (e: GameEvent<string, InputState>) => {
-        if (e.target !== "Mouse0" || !e.data[e.target])
-        {
+        if (e.target !== "Mouse0" || !e.data[e.target]) {
             return;
         }
-        if (this.sndIcon.box.has(pointer))
-        {
-            if (++this.sound > 2)
-            {
+        if (this.sndIcon.box.has(pointer)) {
+            if (++this.sound > 2) {
                 this.sound = 0;
             }
-            this.sndIcon.set({f: this.sound});
-            dispatcher.emit({name: "sound", data: this.sound});
+            this.sndIcon.set({ f: this.sound });
+            dispatcher.emit({ name: "sound", data: this.sound });
         }
-        if (this.twtIcon.box.has(pointer))
-        {
+        if (this.twtIcon.box.has(pointer)) {
             const params = new URLSearchParams();
             params.set("url", location.href);
             params.set("text", "Check out OFFICE 404!");
@@ -38,22 +38,15 @@ export default class Settings extends Object2D
         }
     };
 
-    constructor()
-    {
-        super();
-        dispatcher.on("input", this.onInput);
-    }
-
-    render(ctx: Context)
-    {
+    render(ctx: Context) {
         ctx.add(this.twtIcon, this.sndIcon);
     }
 
     async show() {
         await Scheduler.delay(0.5, t => {
             const a = t * t;
-            this.twtIcon.set({a});
-            this.sndIcon.set({a});
+            this.twtIcon.set({ a });
+            this.sndIcon.set({ a });
         });
     }
 

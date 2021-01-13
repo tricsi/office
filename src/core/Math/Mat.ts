@@ -7,7 +7,7 @@ export default class Mat {
     }
 
     reset(mat?: Mat): Mat {
-        this.data.set(mat ? mat.data: [
+        this.data.set(mat ? mat.data : [
             1, 0, 0,
             0, 1, 0,
             0, 0, 1

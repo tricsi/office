@@ -1,9 +1,8 @@
 import Sprite, { SpriteParam } from "./Sprite";
 import Vec from "../Math/Vec";
-import rnd from "../Math/Rnd";
+import { rnd } from "../utils";
 
-export interface EmitterProps
-{
+export interface EmitterProps {
     /** Gravity X */
     x?: number;
     /** Gravity Y */
@@ -30,8 +29,7 @@ export interface EmitterProps
     ou?: (param: SpriteParam, time: number, loop: number) => void;
 }
 
-export default class Emitter extends Sprite
-{
+export default class Emitter extends Sprite {
 
     protected static pos: Vec = new Vec();
 
@@ -46,18 +44,15 @@ export default class Emitter extends Sprite
     constructor(
         param: SpriteParam,
         props?: EmitterProps
-    )
-    {
+    ) {
         super(param);
-        this.props = {x: 0, y: 0, v: 0, r: 0, a: 0, c: 1, s: 0, t: 1, ...props};
-        for (let i = 0; i < this.props.c; i++)
-        {
+        this.props = { x: 0, y: 0, v: 0, r: 0, a: 0, c: 1, s: 0, t: 1, ...props };
+        for (let i = 0; i < this.props.c; i++) {
             this.particles.push(new Sprite(param));
         }
     }
 
-    start(length: number = -1, delay: number = 0, seed: number = this.props.s)
-    {
+    start(length: number = -1, delay: number = 0, seed: number = this.props.s) {
         this.time = -delay;
         this.loop = length < 0;
         this.length = length + this.props.t;
@@ -66,19 +61,15 @@ export default class Emitter extends Sprite
         this.finished = false;
     }
 
-    stop(delay: number = 0)
-    {
+    stop(delay: number = 0) {
         this.length = this.time + this.props.t + delay;
         this.active = false;
         this.loop = false;
     }
 
-    update(delta: number)
-    {
-        if (!this.loop && this.time > this.length)
-        {
-            if (this.finished)
-            {
+    update(delta: number) {
+        if (!this.loop && this.time > this.length) {
+            if (this.finished) {
                 return;
             }
             this.finished = true;
@@ -87,8 +78,8 @@ export default class Emitter extends Sprite
         }
         const props = this.props;
         const pos = Emitter.pos;
-        const {v, c, w, h, s, t, ou} = props;
-        let {a, r} = props;
+        const { v, c, w, h, s, t, ou } = props;
+        let { a, r } = props;
         a = Math.abs(a);
         rnd.SEED = s;
         this.time += delta;
@@ -99,20 +90,19 @@ export default class Emitter extends Sprite
             const loop = Math.floor((this.time + t - time) / t);
             const diff = Math.min(delta, time);
             const prev = time - diff;
-            let {x, y} = this.param;
+            let { x, y } = this.param;
             x += w ? rnd(w, loop) - w / 2 : 0;
             y += h ? rnd(h, loop) - h / 2 : 0;
             const param: SpriteParam = time > delta
                 ? sprite.param
-                : {...this.param, x, y};
+                : { ...this.param, x, y };
             pos.set(0, v * diff).rotate(r - (s ? rnd(a, loop) : a / c * i) + (a / 2)).add(
                 (props.x * time * time) - (props.x * prev * prev) + param.x,
                 (props.y * time * time) - (props.y * prev * prev) + param.y
             );
-            const values: SpriteParam = {...param, x: pos.x, y: pos.y};
+            const values: SpriteParam = { ...param, x: pos.x, y: pos.y };
             ou && ou(values, time / t, loop);
-            if (this.time < 0 || this.time < time || (!this.loop && this.length < t * loop + t - shift))
-            {
+            if (this.time < 0 || this.time < time || (!this.loop && this.length < t * loop + t - shift)) {
                 values.a = 0;
             }
             sprite.set(values, null);

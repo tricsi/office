@@ -42,8 +42,8 @@ export default class Sound {
 
     protected set(param: AudioParam, value: number | number[], length: number, offset: number) {
         value instanceof Array
-        ? param.setValueCurveAtTime(Float32Array.from(value), offset, length - 0.01)
-        : param.setValueAtTime(value, offset);
+            ? param.setValueCurveAtTime(Float32Array.from(value), offset, length - 0.01)
+            : param.setValueAtTime(value, offset);
     }
 
     render(freq: number | number[], length: number = this.param[1], offset: number = 0) {
