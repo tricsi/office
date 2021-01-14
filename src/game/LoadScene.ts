@@ -11,7 +11,7 @@ import Scheduler from "../core/Engine/Scheduler";
 import { pointer } from "../core/Engine/Pointer";
 import Vec from "../core/Math/Vec";
 import Settings from "./Settings";
-import { SoundParam } from "../core/Audio/Sound";
+import { WAVE_BASS, WAVE_CHIPTUNE, WAVE_ORGAN, SoundParam, WAVE_SINE, WAVE_TRIANGLE, WAVE_SQUARE } from "../core/Audio/Sound";
 
 export default class LoadScene extends Object2D {
 
@@ -51,19 +51,19 @@ export default class LoadScene extends Object2D {
             dispatcher.off("input", this.onInit);
             this.clicked = true;
             this.clickTxt.text("Loading...");
-            const mid: SoundParam = ["sine", 0.2, [0.2, 0], 0];
-            const solo: SoundParam = ["triangle", 0.3, [0.2, 0.1], 0];
-            const cord: SoundParam = ["sawtooth", 0.3, [0.05, 0.07, 0.05], 0];
-            const bass: SoundParam = ["square", 0.2, [0.2, 0], 0];
-            const kick: SoundParam = ["sine", 0.3, [1, 0.1, 0], 0];
-            const snare: SoundParam = ["sine", 0.2, 0, [1, 0]];
+            const mid: SoundParam = [WAVE_SINE, 0.2, [0.2, 0], 0];
+            const solo: SoundParam = [WAVE_CHIPTUNE, 0.3, [0.2, 0.1], 0];
+            const cord: SoundParam = [WAVE_ORGAN, 0.3, [0.1, 0.2, 0.1], 0];
+            const bass: SoundParam = [WAVE_BASS, 0.2, [0.5, 0], 0];
+            const kick: SoundParam = [WAVE_SINE, 0.3, [1, 0.1, 0], 0];
+            const snare: SoundParam = [WAVE_SINE, 0.2, 0, [1, 0]];
             await Player.init();
             await Player.sound("place", kick, [110, 15, 0]);
-            await Player.sound("lock", ["triangle", 0.4, [0, 0.2], 0], [880, 220, 880]);
-            await Player.music("clear", [[["square", 0.2, [0.2, 0], 0], "1a6,1c7,1e7", 0.05]]);
+            await Player.sound("lock", [WAVE_TRIANGLE, 0.4, [0, 0.2], 0], [880, 220, 880]);
+            await Player.music("clear", [[[WAVE_SQUARE, 0.2, [0.2, 0], 0], "1a6,1c7,1e7", 0.05]]);
             await Player.music("coin", [[mid, "2a4,2a5", 0.05]]);
             await Player.music("buy", [[mid, "2a6,2e7,2a7", 0.05]]);
-            await Player.sound("fired", ["triangle", 1, [0.3, 0], [0.2, 0]], [880, 110]);
+            await Player.sound("fired", [WAVE_TRIANGLE, 1, [0.3, 0], [0.2, 0]], [880, 110]);
             await Player.music("promoted", [
                 [mid, "1f5a5c6,3f5a5c6,1f5a5c6,3g5b5d6,4a5c6e6", 0.1],
                 [solo, "1f6,3f6,1f6,3g6,4a6", 0.1],

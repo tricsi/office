@@ -1,6 +1,6 @@
 export type SoundParam = [
     /** Oscillator type */
-    OscillatorType,
+    OscillatorType | number[],
     /** Length */
     number,
     /** Oscillator curve */
@@ -8,6 +8,19 @@ export type SoundParam = [
     /** Noise curve */
     number | number[]
 ];
+
+export function waveFactory(factory: (n: number) => number): number[] {
+    return Array.from({ length: 8191 }, (_, n) => factory(n + 1));
+}
+
+export const WAVE_SAW = "sawtooth";
+export const WAVE_SINE = "sine";
+export const WAVE_SQUARE = "square";
+export const WAVE_TRIANGLE = "triangle";
+export const WAVE_BASS = [1, .81, .21, .021];
+export const WAVE_BRASS = [.4, .4, 1, 1, 1, .3, .7, .6, .5, .9, .8];
+export const WAVE_ORGAN = [1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1];
+export const WAVE_CHIPTUNE = waveFactory((n) => 4 / (n * Math.PI) * Math.sin(Math.PI * n * 0.18))
 
 export default class Sound {
 
@@ -36,7 +49,12 @@ export default class Sound {
         this.oscVol.connect(ctx.destination);
 
         this.osc = this.ctx.createOscillator();
-        this.osc.type = param[0];
+        if (typeof param[0] === "string") {
+            this.osc.type = param[0];
+        } else {
+            const real = [0, ...param[0]];
+            this.osc.setPeriodicWave(ctx.createPeriodicWave(real, real.map(() => 0)));
+        }
         this.osc.connect(this.oscVol);
     }
 
