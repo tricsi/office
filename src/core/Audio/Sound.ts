@@ -52,7 +52,7 @@ export default class Sound {
         if (typeof param[0] === "string") {
             this.osc.type = param[0];
         } else {
-            const real = [0, ...param[0]];
+            const real = Float32Array.from([0, ...param[0]]);
             this.osc.setPeriodicWave(ctx.createPeriodicWave(real, real.map(() => 0)));
         }
         this.osc.connect(this.oscVol);

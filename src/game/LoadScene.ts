@@ -52,9 +52,9 @@ export default class LoadScene extends Object2D {
             this.clicked = true;
             this.clickTxt.text("Loading...");
             const mid: SoundParam = [WAVE_SINE, 0.2, [0.2, 0], 0];
-            const solo: SoundParam = [WAVE_CHIPTUNE, 0.3, [0.2, 0.1], 0];
+            const solo: SoundParam = [WAVE_CHIPTUNE, 0.3, [0.5, 0.2], 0];
             const cord: SoundParam = [WAVE_ORGAN, 0.3, [0.1, 0.2, 0.1], 0];
-            const bass: SoundParam = [WAVE_BASS, 0.2, [0.5, 0], 0];
+            const bass: SoundParam = [WAVE_BASS, 0.2, [0.3, 0], 0];
             const kick: SoundParam = [WAVE_SINE, 0.3, [1, 0.1, 0], 0];
             const snare: SoundParam = [WAVE_SINE, 0.2, 0, [1, 0]];
             await Player.init();
