@@ -11,7 +11,7 @@ export class ObjectPool extends Object2D {
         super();
     }
 
-    create(init: ObjectInit = null): Object2D {
+    create(init?: ObjectInit): Object2D {
         let item = this.pool.pop();
         if (!item) {
             item = this.factory();

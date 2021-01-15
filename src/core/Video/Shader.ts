@@ -25,7 +25,7 @@ export default class Shader {
         return shader;
     }
 
-    buffer(id: string, data: Float32Array | Uint16Array): Shader {
+    buff(id: string, data: Float32Array | Uint16Array): Shader {
         const gl = this.gl;
         const buffers = this.buffers;
         const type = data instanceof Float32Array ? gl.ARRAY_BUFFER : gl.ELEMENT_ARRAY_BUFFER;
@@ -37,7 +37,7 @@ export default class Shader {
         return this;
     }
 
-    texture(id: string, image?: HTMLImageElement, pixelate: boolean = true): Shader {
+    txt(id: string, image?: HTMLImageElement, pixelate = true): Shader {
         const gl = this.gl;
         const textures = this.textures;
         if (image) {
@@ -55,10 +55,10 @@ export default class Shader {
         return this;
     }
 
-    attrib(name: string, size: number, data: Float32Array | Uint16Array): Shader {
+    attr(name: string, size: number, data: Float32Array | Uint16Array): Shader {
         const gl = this.gl;
         const locations = this.locations;
-        this.buffer(name, data);
+        this.buff(name, data);
         if (!(name in locations)) {
             locations[name] = gl.getAttribLocation(this.program, name);
             gl.enableVertexAttribArray(locations[name]);
@@ -67,7 +67,7 @@ export default class Shader {
         return this;
     }
 
-    uniform(name: string, value: number | Float32Array, size?: number): Shader {
+    uni(name: string, value: number | Float32Array, size?: number): Shader {
         const gl = this.gl;
         const locations = this.locations;
         if (!(name in locations)) {

@@ -1,5 +1,6 @@
 import texture from "../../asset/texture";
 import Sprite, { SpriteParam } from "./Sprite";
+import Trans from "./Trans";
 
 export type RGBA = [number, number, number, number];
 
@@ -7,20 +8,16 @@ const MAX_SPRITE = 16384;
 
 export default class Context {
 
-    uv: Float32Array;
-    pos: Float32Array;
-    idx: Uint16Array;
-    color: Float32Array;
-    count: number = 0;
+    uv = new Float32Array(MAX_SPRITE * 8);
+    pos = new Float32Array(MAX_SPRITE * 8);
+    idx = new Uint16Array(MAX_SPRITE * 6);
+    color = new Float32Array(MAX_SPRITE * 16);
+    count = 0;
     layers = new Map<number, Sprite[]>();
 
     constructor(public margin: number = 1) {
         const index = [0, 1, 2, 2, 1, 3];
         const length = index.length;
-        this.uv = new Float32Array(MAX_SPRITE * 8);
-        this.pos = new Float32Array(MAX_SPRITE * 8);
-        this.idx = new Uint16Array(MAX_SPRITE * length);
-        this.color = new Float32Array(MAX_SPRITE * 16);
         for (let i = 0; i < this.idx.length; i++) {
             const offset = Math.floor(i / length) * 4;
             this.idx[i] = index[i % length] + offset;
@@ -43,7 +40,7 @@ export default class Context {
     }
 
     add(...sprites: Sprite[]): Context {
-        sprites.forEach(sprite => {
+        for (const sprite of sprites) {
             const { n, l } = sprite.param;
             if (n) {
                 if (!this.layers.has(l)) {
@@ -54,7 +51,7 @@ export default class Context {
             if (sprite.children.length) {
                 this.add(...sprite.children);
             }
-        });
+        }
         return this;
     }
 

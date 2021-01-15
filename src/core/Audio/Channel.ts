@@ -11,11 +11,11 @@ export type ChannelParam = [
 
 export default class Channel {
 
-    static keys: string[] = "c,db,d,eb,e,f,gb,g,ab,a,bb,b".split(",");
+    static keys = "c,db,d,eb,e,f,gb,g,ab,a,bb,b".split(",");
     static freq: number[] = [];
     data: number[][];
-    size: number = 0;
-    length: number = 0;
+    size = 0;
+    length = 0;
 
     constructor(public param: ChannelParam) {
         const [sound, notes, tempo] = param;

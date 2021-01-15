@@ -40,7 +40,7 @@ export default class Overlay extends Object2D {
         });
     }
 
-    async hide(anim: boolean = true) {
+    async hide(anim = true) {
         if (this.emitter.active) {
             this.emitter.stop();
         }

@@ -1,7 +1,7 @@
 import Sprite from "../core/Video/Sprite";
 import Config from "./Config";
 import Object2D from "../core/Engine/Object2D";
-import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
+import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import { pointer } from "../core/Engine/Pointer";
 import Context from "../core/Video/Context";
@@ -15,7 +15,7 @@ export default class Settings extends Object2D {
 
     constructor() {
         super();
-        dispatcher.on("input", this.onInput);
+        Dispatcher.on("input", this.onInput);
     }
 
     onInput = async (e: GameEvent<string, InputState>) => {
@@ -27,7 +27,7 @@ export default class Settings extends Object2D {
                 this.sound = 0;
             }
             this.sndIcon.set({ f: this.sound });
-            dispatcher.emit({ name: "sound", data: this.sound });
+            Dispatcher.emit({ name: "sound", data: this.sound });
         }
         if (this.twtIcon.box.has(pointer)) {
             const params = new URLSearchParams();

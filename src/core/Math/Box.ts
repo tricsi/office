@@ -2,7 +2,7 @@ import Vec from "./Vec";
 
 export default class Box {
 
-    constructor(public x: number = 0, public y: number = 0, public w: number = 1, public h: number = w) {
+    constructor(public x = 0, public y = 0, public w = 1, public h = w) {
     }
 
     add(box: Box) {
@@ -24,7 +24,7 @@ export default class Box {
         return this.x <= box.x && this.x + this.w >= box.x + box.w && this.y <= box.y && this.y + this.h >= box.y + box.h;
     }
 
-    intersect(box: Box, out: Box = new Box()): Box {
+    intersect(box: Box, out = new Box()): Box {
         let Ax = Math.round(this.x),
             Ay = Math.round(this.y),
             AX = Ax + this.w,

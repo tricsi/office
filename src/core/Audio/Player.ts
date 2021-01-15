@@ -8,7 +8,7 @@ window.OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineA
 class Player {
 
     public bitrate: number = 44100;
-    public ctx: AudioContext = new AudioContext();
+    public ctx = new AudioContext();
     protected mix: { [id: string]: GainNode } = {};
     protected buff: { [id: string]: AudioBuffer } = {};
 
@@ -31,7 +31,7 @@ class Player {
         }
     }
 
-    mixer(id: string, volume: number = -1): GainNode {
+    mixer(id: string, volume = -1): GainNode {
         const ctx = this.ctx;
         const mix = this.mix;
         if (!(id in mix)) {
@@ -44,7 +44,7 @@ class Player {
         return mix[id];
     }
 
-    play(id: string, loop: boolean = false, gain: string = "master"): AudioBufferSourceNode {
+    play(id: string, loop = false, gain = "master"): AudioBufferSourceNode {
         if (id in this.buff) {
             let src = this.ctx.createBufferSource();
             src.loop = loop;

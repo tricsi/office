@@ -4,8 +4,8 @@ import Trans from "./Trans";
 
 class Camera extends Trans {
 
-    canvas: HTMLCanvasElement = $("#game") as HTMLCanvasElement;
-    gl: WebGLRenderingContext = this.canvas.getContext("webgl");
+    canvas = $("#game") as HTMLCanvasElement;
+    gl = this.canvas.getContext("webgl");
     width = this.canvas.width;
     height = this.canvas.height;
 

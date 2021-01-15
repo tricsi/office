@@ -1,6 +1,7 @@
 import Sprite, { SpriteParam } from "./Sprite";
 import Vec from "../Math/Vec";
 import { rnd } from "../utils";
+import Trans from "./Trans";
 
 export interface EmitterProps {
     /** Gravity X */
@@ -29,16 +30,17 @@ export interface EmitterProps {
     ou?: (param: SpriteParam, time: number, loop: number) => void;
 }
 
-export default class Emitter extends Sprite {
+export default class Emitter extends Trans {
 
     protected static pos: Vec = new Vec();
 
+    param: SpriteParam;
     props: EmitterProps;
-    time: number = 0;
-    loop: boolean = false;
-    length: number = 0;
-    active: boolean = false;
-    finished: boolean = true;
+    time = 0;
+    loop = false;
+    length = 0;
+    active = false;
+    finished = true;
     particles: Sprite[] = [];
 
     constructor(
@@ -52,7 +54,7 @@ export default class Emitter extends Sprite {
         }
     }
 
-    start(length: number = -1, delay: number = 0, seed: number = this.props.s) {
+    start(length = -1, delay = 0, seed = this.props.s) {
         this.time = -delay;
         this.loop = length < 0;
         this.length = length + this.props.t;
@@ -61,7 +63,7 @@ export default class Emitter extends Sprite {
         this.finished = false;
     }
 
-    stop(delay: number = 0) {
+    stop(delay = 0) {
         this.length = this.time + this.props.t + delay;
         this.active = false;
         this.loop = false;

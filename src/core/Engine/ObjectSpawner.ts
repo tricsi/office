@@ -3,13 +3,13 @@ import Object2D from "./Object2D";
 
 export class ObjectSpawner extends ObjectPool {
 
-    time: number = 0;
+    time = 0;
 
     constructor(
         protected factory: ObjectFactory,
         protected init: ObjectInit,
-        public frq: number = 0,
-        public limit: number = 0
+        public frq = 0,
+        public limit = 0
     ) {
         super(factory);
     }

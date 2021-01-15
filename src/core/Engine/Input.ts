@@ -1,5 +1,5 @@
 import { on } from "../utils";
-import dispatcher from "./Dispatcher";
+import Dispatcher from "./Dispatcher";
 
 export type InputState = { [code: string]: boolean };
 export const input: InputState = {};
@@ -8,7 +8,7 @@ function update(e: KeyboardEvent, down: boolean): boolean {
     const target = e.code;
     if (input[target] !== down) {
         input[target] = down;
-        dispatcher.emit({ name: "input", target, data: input });
+        Dispatcher.emit({ name: "input", target, data: input });
     }
     return false;
 }

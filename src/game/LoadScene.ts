@@ -4,7 +4,7 @@ import Player from "../core/Audio/Player";
 import GameScene, { GameData } from "./GameScene";
 import Config from "./Config";
 import Object2D from "../core/Engine/Object2D";
-import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
+import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import state from "./State";
 import Scheduler from "../core/Engine/Scheduler";
@@ -42,13 +42,13 @@ export default class LoadScene extends Object2D {
         this.data = GameScene.load();
         this.add(this.settings);
         this.intro();
-        dispatcher.on("coil", this.onCoil)
+        Dispatcher.on("coil", this.onCoil)
             .on("input", this.onInit);
     }
 
     onInit = async (e: GameEvent<string, InputState>) => {
         if (e.target === "Mouse0" && e.data[e.target]) {
-            dispatcher.off("input", this.onInit);
+            Dispatcher.off("input", this.onInit);
             this.clicked = true;
             this.clickTxt.text("Loading...");
             const mid: SoundParam = [WAVE_SINE, 0.2, [0.2, 0], 0];
@@ -90,10 +90,10 @@ export default class LoadScene extends Object2D {
         const load = this.load;
         if (e.target === "Mouse0" && e.data[e.target] && (load || this.create)) {
             this.hide();
-            dispatcher.off("input", this.onInput)
+            Dispatcher.off("input", this.onInput)
                 .off("pointer", this.onPointer);
             Player.play("music", true, "music");
-            dispatcher.on("sound", (e) => this.sound = e.data);
+            Dispatcher.on("sound", (e) => this.sound = e.data);
             state.scenes[1] = new GameScene(load ? this.data : null);
         }
     };
@@ -135,7 +135,7 @@ export default class LoadScene extends Object2D {
             this.newTxt.set({ a: t * t });
             this.loadTxt.set({ a: t * t });
         });
-        dispatcher
+        Dispatcher
             .on("input", this.onInput)
             .on("pointer", this.onPointer);
         await this.settings.show();

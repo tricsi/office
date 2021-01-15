@@ -4,7 +4,7 @@ import Config from "./Config";
 import Context from "../core/Video/Context";
 import Tile, { Tileset } from "./Tile";
 import Scheduler from "../core/Engine/Scheduler";
-import dispatcher from "../core/Engine/Dispatcher";
+import Dispatcher from "../core/Engine/Dispatcher";
 
 export interface HudData {
     move: number;
@@ -103,7 +103,7 @@ export default class Hud extends Object2D {
     async buy(next: number) {
         const price = this.price;
         const type = this.shop.type;
-        dispatcher.emit({ name: "buy", target: this.shop, data: price });
+        Dispatcher.emit({ name: "buy", target: this.shop, data: price });
         await this.shop.moveTo(this.tile);
         this.item = next;
         this.coin -= price;

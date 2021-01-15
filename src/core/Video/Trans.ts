@@ -19,7 +19,7 @@ export interface TransParam {
 
 export default class Trans {
 
-    mat: Mat = new Mat();
+    mat = new Mat();
     param: TransParam = {};
     children: Trans[] = [];
 

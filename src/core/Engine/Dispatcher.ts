@@ -9,7 +9,7 @@ export interface GameEvent<T = any, D = any> {
 
 export type Listener = (event?: GameEvent) => void;
 
-export class Dispatcher {
+class Dispatcher {
 
     listeners: { [event: string]: Listener[] } = { all: [] };
 
@@ -44,6 +44,4 @@ export class Dispatcher {
 
 }
 
-const dispatcher = new Dispatcher();
-
-export default dispatcher;
+export default new Dispatcher();

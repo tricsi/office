@@ -1,5 +1,5 @@
 import Object2D from "../core/Engine/Object2D";
-import dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
+import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import Grid from "./Grid";
 import Player from "../core/Audio/Player";
 import Hud, { HudData } from "./Hud";
@@ -52,13 +52,13 @@ export default class GameScene extends Object2D {
                 if (!grid.check()) {
                     this.clear();
                     this.ended = true;
-                    dispatcher.emit({ name: "fired" });
+                    Dispatcher.emit({ name: "fired" });
                     this.overlay.show("fired", false);
                 }
                 else if (!hud.move) {
                     this.clear();
                     this.ended = true;
-                    dispatcher.emit({ name: "promoted" });
+                    Dispatcher.emit({ name: "promoted" });
                     this.overlay.show("promoted", true);
                 }
                 else {
@@ -105,7 +105,7 @@ export default class GameScene extends Object2D {
             .add(this.grid)
             .add(this.score)
             .add(this.overlay);
-        dispatcher
+        Dispatcher
             .on("input", this.onInput)
             .on("place", this.onPlace)
             .on("merge", this.onMerge)

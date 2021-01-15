@@ -8,10 +8,7 @@ export default class Vec {
         return Math.atan2(this.y, this.x);
     }
 
-    constructor(
-        public x: number = 0,
-        public y: number = x
-    ) { }
+    constructor(public x = 0, public y = x) { }
 
     copy(out: Vec): Vec {
         out.x = this.x;
@@ -33,19 +30,19 @@ export default class Vec {
         return this;
     }
 
-    add(x: number | Vec = 0, y: number = 0): Vec {
+    add(x: number | Vec = 0, y = 0): Vec {
         this.x += x instanceof Vec ? x.x : x;
         this.y += x instanceof Vec ? x.y : y;
         return this;
     }
 
-    sub(x: number | Vec = 0, y: number = 0): Vec {
+    sub(x: number | Vec = 0, y = 0): Vec {
         this.x -= x instanceof Vec ? x.x : x;
         this.y -= x instanceof Vec ? x.y : y;
         return this;
     }
 
-    scale(x: number, y: number = x): Vec {
+    scale(x: number, y = x): Vec {
         this.x *= x;
         this.y *= y;
         return this;

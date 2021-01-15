@@ -1,6 +1,6 @@
 export default class Mat {
 
-    data: Float32Array = new Float32Array(9);
+    data = new Float32Array(9);
 
     constructor() {
         this.reset();
@@ -53,7 +53,7 @@ export default class Mat {
         return this;
     }
 
-    scale(x: number, y: number = x): Mat {
+    scale(x: number, y = x): Mat {
         if (x !== 1 || y !== 1) {
             const data = this.data;
             data[0] *= x;

@@ -30,9 +30,9 @@ export interface SpriteParam extends TransParam {
 export default class Sprite extends Trans {
 
     param: SpriteParam;
-    mesh: Float32Array = new Float32Array(8);
+    mesh = new Float32Array(8);
     tint: RGBA = [1, 1, 1, 1];
-    box: Box = new Box();
+    box = new Box();
     children: Sprite[];
 
     constructor(param: SpriteParam = {}) {
