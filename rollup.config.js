@@ -25,7 +25,7 @@ export default {
             ecma: 9,
             module: true,
             toplevel: true,
-            compress: {
+            compress: isDev ? false : {
                 keep_fargs: false,
                 passes: 5,
                 pure_funcs: ['assert', 'debug'],
