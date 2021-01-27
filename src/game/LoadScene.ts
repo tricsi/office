@@ -1,9 +1,7 @@
 import Txt from "../core/Video/Txt";
-import Context from "../core/Video/Context";
 import Player from "../core/Audio/Player";
 import GameScene, { GameData } from "./GameScene";
 import Config from "./Config";
-import Object2D from "../core/Engine/Object2D";
 import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import state from "./State";
@@ -12,16 +10,17 @@ import { pointer } from "../core/Engine/Pointer";
 import Vec from "../core/Math/Vec";
 import Settings from "./Settings";
 import { WAVE_BASS, WAVE_CHIPTUNE, WAVE_ORGAN, SoundParam, WAVE_SINE, WAVE_TRIANGLE, WAVE_SQUARE } from "../core/Audio/Sound";
+import Trans from "../core/Video/Trans";
 
-export default class LoadScene extends Object2D {
+export default class LoadScene extends Trans {
 
     data: GameData;
-    logo = new Txt({ ...Config.font, s: 2, c: "eee", va: 1, ha: 1 });
-    num = new Txt({ ...Config.font, y: -10, r: 0.3, c: "900", ha: 1 });
-    newTxt = new Txt({ ...Config.font, y: 0, ha: 1 });
-    loadTxt = new Txt({ ...Config.font, y: 12, ha: 1 });
-    clickTxt = new Txt({ ...Config.tiny, y: 12, ha: 1 });
-    settings = new Settings();
+    logo = new Txt({ ...Config.font, s: 2, c: "eee", va: 1, ha: 1, p: this });
+    num = new Txt({ ...Config.font, y: -10, r: 0.3, c: "900", ha: 1, p: this });
+    newTxt = new Txt({ ...Config.font, y: 0, ha: 1, p: this });
+    loadTxt = new Txt({ ...Config.font, y: 12, ha: 1, p: this });
+    clickTxt = new Txt({ ...Config.tiny, y: 12, ha: 1, p: this });
+    settings = new Settings({p: this});
     clicked = false;
 
     get load(): boolean {
@@ -40,7 +39,6 @@ export default class LoadScene extends Object2D {
     constructor() {
         super();
         this.data = GameScene.load();
-        this.add(this.settings);
         this.intro();
         Dispatcher.on("coil", this.onCoil)
             .on("input", this.onInit);
@@ -147,11 +145,6 @@ export default class LoadScene extends Object2D {
             this.newTxt.set({ a });
             this.loadTxt.set({ a });
         });
-    }
-
-    render(ctx: Context) {
-        super.render(ctx);
-        ctx.add(this.logo, this.num, this.newTxt, this.loadTxt, this.clickTxt);
     }
 
 }

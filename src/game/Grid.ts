@@ -1,23 +1,20 @@
-import Object2D from "../core/Engine/Object2D";
 import Tile, { Tileset } from "./Tile";
 import Tiles from "../core/Video/Tiles";
-import Context from "../core/Video/Context";
-import Sprite from "../core/Video/Sprite";
 import Dispatcher from "../core/Engine/Dispatcher";
 import { rnd } from "../core/utils";
 import Config from "./Config";
+import Trans, { TransParam } from "../core/Video/Trans";
 
-export default class Grid extends Object2D {
+export default class Grid extends Trans {
 
-    group: Sprite = new Sprite();
-    back: Tiles = new Tiles({ ...Config.tile, x: 8, y: 8, p: this.group }, { w: 6, h: 6, m: "az" });
+    back: Tiles = new Tiles({ ...Config.tile, x: 8, y: 8, p: this }, { w: 6, h: 6, m: "az" });
     tiles: Tile[] = [];
 
-    constructor(public width: number, public height: number) {
-        super();
+    constructor(param: TransParam, public width: number, public height: number) {
+        super(param);
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
-                this.tiles.push(new Tile(x * 16 - 40, y * 16 - 40, 0, this.group));
+                this.tiles.push(new Tile(x * 16 - 40, y * 16 - 40, 0, this));
             }
         }
         for (let y = 0; y < this.height; y++) {
@@ -37,10 +34,6 @@ export default class Grid extends Object2D {
 
     toJSON(): number[] {
         return this.tiles.map(t => t.type);
-    }
-
-    render(ctx: Context) {
-        ctx.add(this.group);
     }
 
     tile(x: number, y: number): Tile {

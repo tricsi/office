@@ -1,17 +1,12 @@
-import Object2D from "../core/Engine/Object2D";
-import Context from "../core/Video/Context";
 import Txt from "../core/Video/Txt";
 import Config from "./Config";
 import Scheduler from "../core/Engine/Scheduler";
 import Tile from "./Tile";
+import Trans from "../core/Video/Trans";
 
-export default class Score extends Object2D {
+export default class Score extends Trans {
 
-    scoreTxt = new Txt({ ...Config.tiny, c: "fff", ha: 1, va: 1, l: 3 });
-
-    render(ctx: Context) {
-        ctx.add(this.scoreTxt);
-    }
+    scoreTxt = new Txt({ ...Config.tiny, c: "fff", ha: 1, va: 1, l: 3, p: this });
 
     async score(tile: Tile, coin: number) {
         const { x, y } = tile.sprite.param;

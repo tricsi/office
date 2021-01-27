@@ -1,4 +1,3 @@
-import Object2D from "../core/Engine/Object2D";
 import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import Grid from "./Grid";
 import Player from "../core/Audio/Player";
@@ -9,13 +8,14 @@ import { InputState } from "../core/Engine/Input";
 import Config from "./Config";
 import Score from "./Score";
 import Overlay from "./Overlay";
+import Trans from "../core/Video/Trans";
 
 export interface GameData {
     hud: HudData;
     grid: number[];
 }
 
-export default class GameScene extends Object2D {
+export default class GameScene extends Trans {
 
     static store = "office_404";
     static load(): GameData {
@@ -27,10 +27,10 @@ export default class GameScene extends Object2D {
         return null;
     }
 
-    hud = new Hud();
-    grid = new Grid(6, 6);
-    score = new Score();
-    overlay = new Overlay();
+    hud = new Hud({p: this});
+    grid = new Grid({p: this}, 6, 6);
+    score = new Score({p: this});
+    overlay = new Overlay({p: this});
     active = true;
     ended = false;
 

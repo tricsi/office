@@ -39,14 +39,17 @@ export default class Context {
         return this;
     }
 
-    add(...sprites: Sprite[]): Context {
+    add(...sprites: Trans[]): Context {
         for (const sprite of sprites) {
-            const { n, l } = sprite.param;
-            if (n) {
-                if (!this.layers.has(l)) {
-                    this.layers.set(l, []);
+            if (sprite instanceof Sprite)
+            {
+                const { n, l } = sprite.param;
+                if (n) {
+                    if (!this.layers.has(l)) {
+                        this.layers.set(l, []);
+                    }
+                    this.layers.get(l).push(sprite);
                 }
-                this.layers.get(l).push(sprite);
             }
             if (sprite.children.length) {
                 this.add(...sprite.children);

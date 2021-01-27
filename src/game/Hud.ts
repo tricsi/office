@@ -1,10 +1,9 @@
-import Object2D from "../core/Engine/Object2D";
 import Txt from "../core/Video/Txt";
 import Config from "./Config";
-import Context from "../core/Video/Context";
 import Tile, { Tileset } from "./Tile";
 import Scheduler from "../core/Engine/Scheduler";
 import Dispatcher from "../core/Engine/Dispatcher";
+import Trans, { TransParam } from "../core/Video/Trans";
 
 export interface HudData {
     move: number;
@@ -13,17 +12,17 @@ export interface HudData {
     item: number;
 }
 
-export default class Hud extends Object2D {
+export default class Hud extends Trans {
 
     protected _data: HudData = { coin: 0, type: 1, move: 404, item: 12 };
-    tile = new Tile(-40, -58);
-    shop = new Tile(0, 70);
-    moveLbl = new Txt({ ...Config.tiny, x: -30, y: -62, va: 1 }, "Days");
-    moveTxt = new Txt({ ...Config.font, x: -30, y: -55, va: 1 });
-    coinLbl = new Txt({ ...Config.tiny, x: 48, y: -62, va: 1, ha: 2 }, "Money");
-    coinTxt = new Txt({ ...Config.font, x: 48, y: -55, va: 1, ha: 2 });
-    infoTxt = new Txt({ ...Config.tiny, y: 52, ha: 1 }, "Click on empty tiles");
-    priceTxt = new Txt({ ...Config.font, y: 84, va: 1, ha: 1 }, "$9999");
+    tile = new Tile(-40, -58, 0, this);
+    shop = new Tile(0, 70, 0, this);
+    moveLbl = new Txt({ ...Config.tiny, x: -30, y: -62, va: 1, p: this }, "Days");
+    moveTxt = new Txt({ ...Config.font, x: -30, y: -55, va: 1, p: this });
+    coinLbl = new Txt({ ...Config.tiny, x: 48, y: -62, va: 1, ha: 2, p: this }, "Money");
+    coinTxt = new Txt({ ...Config.font, x: 48, y: -55, va: 1, ha: 2, p: this });
+    infoTxt = new Txt({ ...Config.tiny, y: 52, ha: 1, p: this }, "Click on empty tiles");
+    priceTxt = new Txt({ ...Config.font, y: 84, va: 1, ha: 1, p: this }, "$9999");
     infoIdx = 0;
     infos = [
         "Merge 3 objects",
@@ -88,8 +87,8 @@ export default class Hud extends Object2D {
         this.priceTxt.set({ a });
     }
 
-    constructor() {
-        super();
+    constructor(param: TransParam) {
+        super(param);
         this.load(this._data);
     }
 
@@ -148,10 +147,6 @@ export default class Hud extends Object2D {
                 }
                 break;
         }
-    }
-
-    render(ctx: Context) {
-        ctx.add(this.tile.sprite, this.shop.sprite, this.moveLbl, this.moveTxt, this.coinLbl, this.coinTxt, this.infoTxt, this.priceTxt);
     }
 
     toJSON(): HudData {

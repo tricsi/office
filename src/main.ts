@@ -22,8 +22,7 @@ function update() {
     requestAnimationFrame(update);
     Scheduler.update();
     scenes.forEach(s => s.update(Scheduler.delta));
-    scenes.forEach(s => s.render(ctx));
-    ctx.flush();
+    ctx.add(...scenes).flush();
     gl.clear(gl.COLOR_BUFFER_BIT);
     const {uv, pos, color, count} = ctx;
     shader.uni("uProj", Camera.mat.data)

@@ -1,20 +1,19 @@
 import Sprite from "../core/Video/Sprite";
 import Config from "./Config";
-import Object2D from "../core/Engine/Object2D";
 import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import { pointer } from "../core/Engine/Pointer";
-import Context from "../core/Video/Context";
 import Scheduler from "../core/Engine/Scheduler";
+import Trans, { TransParam } from "../core/Video/Trans";
 
-export default class Settings extends Object2D {
+export default class Settings extends Trans {
 
     sound = 1;
-    twtIcon = new Sprite({ ...Config.icon, x: -40, y: 84, f: 3, a: 0 });
-    sndIcon = new Sprite({ ...Config.icon, x: 40, y: 84, f: 1, a: 0 });
+    twtIcon = new Sprite({ ...Config.icon, x: -40, y: 84, f: 3, a: 0, p: this });
+    sndIcon = new Sprite({ ...Config.icon, x: 40, y: 84, f: 1, a: 0, p: this });
 
-    constructor() {
-        super();
+    constructor(param: TransParam) {
+        super(param);
         Dispatcher.on("input", this.onInput);
     }
 
@@ -37,10 +36,6 @@ export default class Settings extends Object2D {
             window.open(`http://www.twitter.com/share?${params}`, '_blank');
         }
     };
-
-    render(ctx: Context) {
-        ctx.add(this.twtIcon, this.sndIcon);
-    }
 
     async show() {
         await Scheduler.delay(0.5, t => {
