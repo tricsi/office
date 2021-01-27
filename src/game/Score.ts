@@ -1,8 +1,8 @@
 import Txt from "../core/Video/Txt";
 import Config from "./Config";
-import Scheduler from "../core/Engine/Scheduler";
 import Tile from "./Tile";
 import Trans from "../core/Video/Trans";
+import { delay } from "../core/Engine/Scheduler";
 
 export default class Score extends Trans {
 
@@ -12,8 +12,8 @@ export default class Score extends Trans {
         const { x, y } = tile.sprite.param;
         this.scoreTxt.text("$" + coin);
         this.scoreTxt.set({ x, y, a: 0 });
-        await Scheduler.delay(0.2, a => this.scoreTxt.set({ a }));
-        await Scheduler.delay(0.3);
+        await delay(0.2, a => this.scoreTxt.set({ a }));
+        await delay(0.3);
         this.scoreTxt.set({ a: 0 });
     }
 

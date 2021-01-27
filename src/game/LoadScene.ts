@@ -2,15 +2,15 @@ import Txt from "../core/Video/Txt";
 import Player from "../core/Audio/Player";
 import GameScene, { GameData } from "./GameScene";
 import Config from "./Config";
-import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
+import { GameEvent, listen, mute } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import state from "./State";
-import Scheduler from "../core/Engine/Scheduler";
 import { pointer } from "../core/Engine/Pointer";
 import Vec from "../core/Math/Vec";
 import Settings from "./Settings";
 import { WAVE_BASS, WAVE_CHIPTUNE, WAVE_ORGAN, SoundParam, WAVE_SINE, WAVE_TRIANGLE, WAVE_SQUARE } from "../core/Audio/Sound";
 import Trans from "../core/Video/Trans";
+import { delay } from "../core/Engine/Scheduler";
 
 export default class LoadScene extends Trans {
 
@@ -40,13 +40,13 @@ export default class LoadScene extends Trans {
         super();
         this.data = GameScene.load();
         this.intro();
-        Dispatcher.on("coil", this.onCoil)
-            .on("input", this.onInit);
+        listen("coil", this.onCoil);
+        listen("input", this.onInit);
     }
 
     onInit = async (e: GameEvent<string, InputState>) => {
         if (e.target === "Mouse0" && e.data[e.target]) {
-            Dispatcher.off("input", this.onInit);
+            mute("input", this.onInit);
             this.clicked = true;
             this.clickTxt.text("Loading...");
             const mid: SoundParam = [WAVE_SINE, 0.2, [0.2, 0], 0];
@@ -88,10 +88,10 @@ export default class LoadScene extends Trans {
         const load = this.load;
         if (e.target === "Mouse0" && e.data[e.target] && (load || this.create)) {
             this.hide();
-            Dispatcher.off("input", this.onInput)
-                .off("pointer", this.onPointer);
+            mute("input", this.onInput);
+            mute("pointer", this.onPointer);
             Player.play("music", true, "music");
-            Dispatcher.on("sound", (e) => this.sound = e.data);
+            listen("sound", (e) => this.sound = e.data);
             state.scenes[1] = new GameScene(load ? this.data : null);
         }
     };
@@ -109,17 +109,17 @@ export default class LoadScene extends Trans {
     async intro() {
         const text = "Office";
         const stop = () => this.clicked;
-        await Scheduler.delay(0.5, undefined, stop);
-        await Scheduler.delay(1.5, t => this.logo.text(text.substr(0, Math.ceil(text.length * t))), stop);
+        await delay(0.5, undefined, stop);
+        await delay(1.5, t => this.logo.text(text.substr(0, Math.ceil(text.length * t))), stop);
         this.num.text("404!");
-        await Scheduler.delay(0.3, t => this.num.set({ x: t * 34, s: 3.7 - 2 * t * t, a: t * t }), stop);
-        await Scheduler.delay(0.5, undefined, stop);
+        await delay(0.3, t => this.num.set({ x: t * 34, s: 3.7 - 2 * t * t, a: t * t }), stop);
+        await delay(0.5, undefined, stop);
         !this.clicked && this.clickTxt.text("Click to start");
     }
 
     async start() {
         this.clickTxt.text();
-        await Scheduler.delay(0.5, t => {
+        await delay(0.5, t => {
             const tt = t ** 4;
             this.logo.set({ y: -80 * tt });
             this.num.set({ y: -80 * tt - 10 });
@@ -129,18 +129,17 @@ export default class LoadScene extends Trans {
             this.newTxt.set({ y: -12 });
             this.loadTxt.text("Continue");
         }
-        await Scheduler.delay(0.3, t => {
+        await delay(0.3, t => {
             this.newTxt.set({ a: t * t });
             this.loadTxt.set({ a: t * t });
         });
-        Dispatcher
-            .on("input", this.onInput)
-            .on("pointer", this.onPointer);
+        listen("input", this.onInput);
+        listen("pointer", this.onPointer);
         await this.settings.show();
     }
 
     async hide() {
-        await Scheduler.delay(0.5, t => {
+        await delay(0.5, t => {
             const a = 1 - t * t;
             this.newTxt.set({ a });
             this.loadTxt.set({ a });

@@ -1,4 +1,3 @@
-import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
 import Grid from "./Grid";
 import Player from "../core/Audio/Player";
 import Hud, { HudData } from "./Hud";
@@ -9,6 +8,7 @@ import Config from "./Config";
 import Score from "./Score";
 import Overlay from "./Overlay";
 import Trans from "../core/Video/Trans";
+import { emit, GameEvent, listen } from "../core/Engine/Dispatcher";
 
 export interface GameData {
     hud: HudData;
@@ -52,13 +52,13 @@ export default class GameScene extends Trans {
                 if (!grid.check()) {
                     this.clear();
                     this.ended = true;
-                    Dispatcher.emit({ name: "fired" });
+                    emit({ name: "fired" });
                     this.overlay.show("fired", false);
                 }
                 else if (!hud.move) {
                     this.clear();
                     this.ended = true;
-                    Dispatcher.emit({ name: "promoted" });
+                    emit({ name: "promoted" });
                     this.overlay.show("promoted", true);
                 }
                 else {
@@ -105,12 +105,11 @@ export default class GameScene extends Trans {
             .add(this.grid)
             .add(this.score)
             .add(this.overlay);
-        Dispatcher
-            .on("input", this.onInput)
-            .on("place", this.onPlace)
-            .on("merge", this.onMerge)
-            .on("clear", this.onClear)
-            .on("all", this.onALL);
+        listen("input", this.onInput);
+        listen("place", this.onPlace);
+        listen("merge", this.onMerge);
+        listen("clear", this.onClear);
+        listen("all", this.onALL);
         if (data) {
             this.hud.load(data.hud);
             this.grid.load(data.grid);

@@ -3,8 +3,8 @@ import Txt from "../core/Video/Txt";
 import Sprite from "../core/Video/Sprite";
 import Emitter from "../core/Video/Emitter";
 import { rnd } from "../core/utils";
-import Scheduler from "../core/Engine/Scheduler";
 import Trans, { TransParam } from "../core/Video/Trans";
+import { delay } from "../core/Engine/Scheduler";
 
 export default class Overlay extends Trans {
 
@@ -32,7 +32,7 @@ export default class Overlay extends Trans {
             this.emitter.start();
         }
         this.txt2.text(text + "!");
-        await Scheduler.delay(0.3, t => {
+        await delay(0.3, t => {
             this.back.set({ a: t });
             this.txt1.set({ a: t, s: t > 0.2 ? 3 - t * 2 : 0 });
             this.txt2.set({ a: t, s: t > 0.6 ? 5 - t * 4 : 0 });
@@ -44,7 +44,7 @@ export default class Overlay extends Trans {
             this.emitter.stop();
         }
         if (anim) {
-            await Scheduler.delay(0.3, t => {
+            await delay(0.3, t => {
                 const a = 1 - t * t;
                 this.back.set({ a });
                 this.txt1.set({ a });

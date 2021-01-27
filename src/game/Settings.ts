@@ -1,10 +1,10 @@
 import Sprite from "../core/Video/Sprite";
 import Config from "./Config";
-import Dispatcher, { GameEvent } from "../core/Engine/Dispatcher";
+import { emit, GameEvent, listen } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import { pointer } from "../core/Engine/Pointer";
-import Scheduler from "../core/Engine/Scheduler";
 import Trans, { TransParam } from "../core/Video/Trans";
+import { delay } from "../core/Engine/Scheduler";
 
 export default class Settings extends Trans {
 
@@ -14,7 +14,7 @@ export default class Settings extends Trans {
 
     constructor(param: TransParam) {
         super(param);
-        Dispatcher.on("input", this.onInput);
+        listen("input", this.onInput);
     }
 
     onInput = async (e: GameEvent<string, InputState>) => {
@@ -26,7 +26,7 @@ export default class Settings extends Trans {
                 this.sound = 0;
             }
             this.sndIcon.set({ f: this.sound });
-            Dispatcher.emit({ name: "sound", data: this.sound });
+            emit({ name: "sound", data: this.sound });
         }
         if (this.twtIcon.box.has(pointer)) {
             const params = new URLSearchParams();
@@ -38,7 +38,7 @@ export default class Settings extends Trans {
     };
 
     async show() {
-        await Scheduler.delay(0.5, t => {
+        await delay(0.5, t => {
             const a = t * t;
             this.twtIcon.set({ a });
             this.sndIcon.set({ a });

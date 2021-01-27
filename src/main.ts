@@ -5,12 +5,12 @@ import fragShader from "./shader/tiny.frag";
 import texture from "./asset/texture.png";
 import Context from "./core/Video/Context";
 import Shader from "./core/Video/Shader";
-import Scheduler from "./core/Engine/Scheduler";
 import Camera from "./core/Video/Camera";
 import { fs, on, mobile } from "./core/utils";
 import LoadScene from "./game/LoadScene";
 import state from "./game/State";
-import Dispatcher from "./core/Engine/Dispatcher";
+import { schedule, update } from "./core/Engine/Scheduler";
+import { emit } from "./core/Engine/Dispatcher";
 
 const gl = Camera.gl;
 const ctx = new Context();
@@ -18,10 +18,8 @@ const shader = new Shader(gl, vertShader, fragShader);
 const image = new Image();
 const scenes = state.scenes;
 
-function update() {
-    requestAnimationFrame(update);
-    Scheduler.update();
-    scenes.forEach(s => s.update(Scheduler.delta));
+schedule(delta => {
+    scenes.forEach(s => s.update(delta));
     ctx.add(...scenes).flush();
     gl.clear(gl.COLOR_BUFFER_BIT);
     const {uv, pos, color, count} = ctx;
@@ -30,7 +28,7 @@ function update() {
         .attr("aPos", 2, pos.slice(0, count * 8))
         .attr("aColor", 4, color.slice(0, count * 16));
     gl.drawElements(gl.TRIANGLES, count * 6, gl.UNSIGNED_SHORT, 0);
-}
+});
 
 on(image, "load", () => {
     const doc = document;
@@ -44,7 +42,7 @@ on(image, "load", () => {
     update();
     on(doc, "click", () => mobile() && fs());
     //@ts-ignore
-    doc.monetization && on(doc.monetization, "monetizationstart", () => Dispatcher.emit({ name: "coil" }));
+    doc.monetization && on(doc.monetization, "monetizationstart", () => emit({ name: "coil" }));
 });
 
 image.src = texture;

@@ -1,9 +1,9 @@
 import Sprite from "../core/Video/Sprite";
-import Scheduler from "../core/Engine/Scheduler";
 import { rnd } from "../core/utils";
 import { pointer } from "../core/Engine/Pointer";
 import Config from "./Config";
 import Trans from "../core/Video/Trans";
+import { delay } from "../core/Engine/Scheduler";
 
 export enum Tileset {
     EMPTY,
@@ -139,7 +139,7 @@ export default class Tile {
     }
 
     async show() {
-        await Scheduler.delay(0.2, t => this._sprite.set({ s: t * t }));
+        await delay(0.2, t => this._sprite.set({ s: t * t }));
         this._sprite.set({ s: 1 });
     }
 
@@ -157,7 +157,7 @@ export default class Tile {
     async moveTo(tile: Tile) {
         const { x, y } = this._sprite.param;
         const to = tile._sprite.param;
-        await Scheduler.delay(0.3, t => {
+        await delay(0.3, t => {
             const tt = 1 - t * t;
             this._sprite.set({
                 x: to.x - ((to.x - x) * tt),
@@ -184,14 +184,14 @@ export default class Tile {
     }
 
     async lock() {
-        await Scheduler.delay(0.2, t => this._sprite.set({ r: Math.PI * t, s: 1 - t }));
+        await delay(0.2, t => this._sprite.set({ r: Math.PI * t, s: 1 - t }));
         this.type = 10;
-        await Scheduler.delay(0.2, t => this._sprite.set({ r: Math.PI * (t + 1), s: t }));
+        await delay(0.2, t => this._sprite.set({ r: Math.PI * (t + 1), s: t }));
         this._sprite.set({ r: 0, s: 1 })
     }
 
     async clear() {
-        await Scheduler.delay(0.2, t => this._sprite.set({ s: 1 - t * t }));
+        await delay(0.2, t => this._sprite.set({ s: 1 - t * t }));
         this._sprite.set({ s: 1 });
     }
 

@@ -1,9 +1,9 @@
 import Txt from "../core/Video/Txt";
 import Config from "./Config";
 import Tile, { Tileset } from "./Tile";
-import Scheduler from "../core/Engine/Scheduler";
-import Dispatcher from "../core/Engine/Dispatcher";
 import Trans, { TransParam } from "../core/Video/Trans";
+import { delay } from "../core/Engine/Scheduler";
+import { emit } from "../core/Engine/Dispatcher";
 
 export interface HudData {
     move: number;
@@ -102,7 +102,7 @@ export default class Hud extends Trans {
     async buy(next: number) {
         const price = this.price;
         const type = this.shop.type;
-        Dispatcher.emit({ name: "buy", target: this.shop, data: price });
+        emit({ name: "buy", target: this.shop, data: price });
         await this.shop.moveTo(this.tile);
         this.item = next;
         this.coin -= price;
@@ -113,9 +113,9 @@ export default class Hud extends Trans {
     }
 
     async info(text: string) {
-        await Scheduler.delay(0.2, t => this.infoTxt.set({ a: 1 - t * t }));
+        await delay(0.2, t => this.infoTxt.set({ a: 1 - t * t }));
         this.infoTxt.text(text);
-        await Scheduler.delay(0.3, t => this.infoTxt.set({ a: t * t }));
+        await delay(0.3, t => this.infoTxt.set({ a: t * t }));
     }
 
     show() {
