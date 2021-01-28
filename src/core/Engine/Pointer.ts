@@ -17,7 +17,7 @@ function update(e: MouseEvent, down?: boolean) {
 }
 
 const body = document.body;
-on(body, "contextmenu", (e: MouseEvent) => e.preventDefault());
-on(body, "mousedown", (e: MouseEvent) => update(e, true));
-on(body, "mouseup", (e: MouseEvent) => update(e, false));
-on(body, "mousemove", (e: MouseEvent) => update(e));
+on(body, "contextmenu", (e: MouseEvent) => e.preventDefault())
+    (body, "mousedown", (e: MouseEvent) => update(e, true))
+    (body, "mouseup", (e: MouseEvent) => update(e, false))
+    (body, "mousemove", (e: MouseEvent) => update(e));

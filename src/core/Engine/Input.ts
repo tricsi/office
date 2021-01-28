@@ -13,5 +13,5 @@ function update(e: KeyboardEvent, down: boolean): boolean {
     return false;
 }
 
-on(document, "keydown", (e: KeyboardEvent) => update(e, true));
-on(document, "keyup", (e: KeyboardEvent) => update(e, false));
+on(document, "keydown", (e: KeyboardEvent) => update(e, true))
+    (document, "keyup", (e: KeyboardEvent) => update(e, false));

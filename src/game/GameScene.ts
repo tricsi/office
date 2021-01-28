@@ -101,15 +101,12 @@ export default class GameScene extends Trans {
 
     constructor(data?: GameData) {
         super();
-        this.add(this.hud)
-            .add(this.grid)
-            .add(this.score)
-            .add(this.overlay);
-        listen("input", this.onInput);
-        listen("place", this.onPlace);
-        listen("merge", this.onMerge);
-        listen("clear", this.onClear);
-        listen("all", this.onALL);
+        this.add(this.hud, this.grid, this.score, this.overlay);
+        listen("input", this.onInput)
+            ("place", this.onPlace)
+            ("merge", this.onMerge)
+            ("clear", this.onClear)
+            ("all", this.onALL);
         if (data) {
             this.hud.load(data.hud);
             this.grid.load(data.grid);

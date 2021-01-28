@@ -1,5 +1,4 @@
 import Box from "../Math/Box";
-import { RGBA } from "./Context";
 import Trans, { TransParam } from "./Trans";
 
 export interface SpriteParam extends TransParam {
@@ -29,11 +28,11 @@ export interface SpriteParam extends TransParam {
 
 export default class Sprite extends Trans {
 
+    children: Sprite[];
     param: SpriteParam;
     mesh = new Float32Array(8);
-    tint: RGBA = [1, 1, 1, 1];
+    tint = new Float32Array(4);
     box = new Box();
-    children: Sprite[];
 
     constructor(param: SpriteParam = {}) {
         super({ n: "", f: 0, w: 0, h: 0, px: 0, py: 0, mh: 0, mv: 0, l: 0, c: "", a: 1, ...param });
@@ -55,7 +54,7 @@ export default class Sprite extends Trans {
         const { w, h, px, py, c, a, p } = this.param;
         const data = this.mat.translate(-px, -py).data;
 
-        p instanceof Sprite ? p.tint.forEach((v, i) => this.tint[i] = v) : this.tint.fill(1);
+        p instanceof Sprite ? this.tint.set(p.tint) : this.tint.fill(1);
         c.split("").forEach((v, i) => this.tint[i] *= parseInt(v, 16) / 15);
         this.tint[3] *= a;
 

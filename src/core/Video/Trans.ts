@@ -35,7 +35,6 @@ export default class Trans {
                 child.param.p = this;
             }
         }
-        return this;
     }
 
     remove(...children: Trans[]) {
@@ -65,7 +64,7 @@ export default class Trans {
         param.p?.add(this);
         this.param = { ...this.param, ...param };
         this.compute();
-        this.children.forEach(child => child.set(childParam, childParam));
+        this.each(child => child.set(childParam, childParam));
     }
 
     protected compute() {

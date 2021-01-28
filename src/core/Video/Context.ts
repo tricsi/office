@@ -2,9 +2,7 @@ import texture from "../../asset/texture";
 import Sprite, { SpriteParam } from "./Sprite";
 import Trans from "./Trans";
 
-export type RGBA = [number, number, number, number];
-
-const MAX_SPRITE = 16384;
+const MAX_SPRITE = 4096;
 
 export default class Context {
 
@@ -12,8 +10,8 @@ export default class Context {
     pos = new Float32Array(MAX_SPRITE * 8);
     idx = new Uint16Array(MAX_SPRITE * 6);
     color = new Float32Array(MAX_SPRITE * 16);
-    count = 0;
     layers = new Map<number, Sprite[]>();
+    count = 0;
 
     constructor(public margin: number = 1) {
         const index = [0, 1, 2, 2, 1, 3];
@@ -24,6 +22,25 @@ export default class Context {
         }
     }
 
+    add(...sprites: Trans[]): Context {
+        for (const sprite of sprites) {
+            if (sprite instanceof Sprite) {
+                const { n, l } = sprite.param;
+                const layers = this.layers;
+                if (n) {
+                    if (!layers.has(l)) {
+                        layers.set(l, []);
+                    }
+                    layers.get(l).push(sprite);
+                }
+            }
+            if (sprite.children.length) {
+                this.add(...sprite.children);
+            }
+        }
+        return this;
+    }
+
     flush(
         sort?: (a: Sprite, b: Sprite) => number,
         layers: number[] | IterableIterator<number> = this.layers.keys()
@@ -32,27 +49,8 @@ export default class Context {
         for (const layer of layers) {
             const sprites = this.layers.get(layer);
             if (sprites) {
-                (sort ? sprites.sort(sort) : sprites).forEach(sprite => this.addSprite(sprite));
+                (sort ? sprites.sort(sort) : sprites).forEach(sprite =>  this.addSprite(sprite));
                 sprites.length = 0;
-            }
-        }
-        return this;
-    }
-
-    add(...sprites: Trans[]): Context {
-        for (const sprite of sprites) {
-            if (sprite instanceof Sprite)
-            {
-                const { n, l } = sprite.param;
-                if (n) {
-                    if (!this.layers.has(l)) {
-                        this.layers.set(l, []);
-                    }
-                    this.layers.get(l).push(sprite);
-                }
-            }
-            if (sprite.children.length) {
-                this.add(...sprite.children);
             }
         }
         return this;

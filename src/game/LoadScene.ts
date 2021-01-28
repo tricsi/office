@@ -40,8 +40,8 @@ export default class LoadScene extends Trans {
         super();
         this.data = GameScene.load();
         this.intro();
-        listen("coil", this.onCoil);
-        listen("input", this.onInit);
+        listen("coil", this.onCoil)
+            ("input", this.onInit);
     }
 
     onInit = async (e: GameEvent<string, InputState>) => {
@@ -88,8 +88,8 @@ export default class LoadScene extends Trans {
         const load = this.load;
         if (e.target === "Mouse0" && e.data[e.target] && (load || this.create)) {
             this.hide();
-            mute("input", this.onInput);
-            mute("pointer", this.onPointer);
+            mute("input", this.onInput)
+                ("pointer", this.onPointer);
             Player.play("music", true, "music");
             listen("sound", (e) => this.sound = e.data);
             state.scenes[1] = new GameScene(load ? this.data : null);
@@ -133,8 +133,8 @@ export default class LoadScene extends Trans {
             this.newTxt.set({ a: t * t });
             this.loadTxt.set({ a: t * t });
         });
-        listen("input", this.onInput);
-        listen("pointer", this.onPointer);
+        listen("input", this.onInput)
+            ("pointer", this.onPointer);
         await this.settings.show();
     }
 

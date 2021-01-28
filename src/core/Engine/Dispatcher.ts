@@ -22,6 +22,7 @@ export function listen(event: string, listener: Listener) {
         }
         listeners[name].push(listener);
     }
+    return listen;
 }
 
 export function mute(event: string, listener: Listener) {
@@ -31,9 +32,11 @@ export function mute(event: string, listener: Listener) {
             index >= 0 && listeners[name].splice(index, 1);
         }
     }
+    return mute;
 }
 
 export function emit(event: GameEvent) {
     listeners["all"].forEach(listener => listener(event));
     listeners[event.name]?.forEach(listener => listener(event));
+    return emit;
 }
