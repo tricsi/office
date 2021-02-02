@@ -10,6 +10,7 @@ import Overlay from "./Overlay";
 import Object2D from "../core/Engine/Object2D";
 import { emit, GameEvent, listen } from "../core/Engine/Dispatcher";
 import Tiles from "../core/Video/Tiles";
+import { store } from "./State";
 
 export interface GameData {
     hud: HudData;
@@ -17,16 +18,6 @@ export interface GameData {
 }
 
 export default class GameScene extends Object2D {
-
-    static store = "office_404";
-    static load(): GameData {
-        try {
-            return JSON.parse(localStorage.getItem(GameScene.store));
-        }
-        catch (e) {
-        }
-        return null;
-    }
 
     hud = new Hud({p: this});
     grid = new Grid({p: this}, 6, 6);
@@ -128,11 +119,11 @@ export default class GameScene extends Object2D {
 
     save() {
         const { hud, grid } = this;
-        localStorage.setItem(GameScene.store, JSON.stringify({ hud, grid }));
+        store.set({ hud, grid });
     }
 
     clear() {
-        localStorage.removeItem(GameScene.store);
+        store.set();
     }
 
     coin(tile: Tile, count: number = 1) {

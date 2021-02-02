@@ -4,7 +4,7 @@ import GameScene, { GameData } from "./GameScene";
 import Config from "./Config";
 import { GameEvent, listen, mute } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
-import state from "./State";
+import state, { store } from "./State";
 import { pointer } from "../core/Engine/Pointer";
 import Vec from "../core/Math/Vec";
 import Settings from "./Settings";
@@ -14,7 +14,7 @@ import { delay } from "../core/Engine/Scheduler";
 
 export default class LoadScene extends Object2D {
 
-    data: GameData;
+    data: GameData = store.get();
     num = new Txt({ ...Config.font, y: -10, r: 0.3, c: "900", ha: 1, p: this });
     logo = new Txt({ ...Config.font, s: 2, c: "eee", va: 1, ha: 1, p: this });
     newTxt = new Txt({ ...Config.font, y: 0, ha: 1, p: this });
@@ -38,7 +38,6 @@ export default class LoadScene extends Object2D {
 
     constructor() {
         super();
-        this.data = GameScene.load();
         this.intro();
         listen("coil", this.onCoil)
             ("input", this.onInit);
