@@ -13,15 +13,6 @@ export function waveFactory(factory: (n: number) => number): number[] {
     return Array.from({ length: 8191 }, (_, n) => factory(n + 1));
 }
 
-export const WAVE_SAW = "sawtooth";
-export const WAVE_SINE = "sine";
-export const WAVE_SQUARE = "square";
-export const WAVE_TRIANGLE = "triangle";
-export const WAVE_BASS = [1, .81, .21, .021];
-export const WAVE_BRASS = [.4, .4, 1, 1, 1, .3, .7, .6, .5, .9, .8];
-export const WAVE_ORGAN = [1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1];
-export const WAVE_CHIPTUNE = waveFactory((n) => 4 / (n * Math.PI) * Math.sin(Math.PI * n * 0.18))
-
 export default class Sound {
 
     static noise: AudioBuffer;
