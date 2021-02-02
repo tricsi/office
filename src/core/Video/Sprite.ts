@@ -1,7 +1,7 @@
 import Box from "../Math/Box";
-import Trans, { TransParam } from "./Trans";
+import Object2D, { ObjectParam } from "../Engine/Object2D";
 
-export interface SpriteParam extends TransParam {
+export interface SpriteParam extends ObjectParam {
     /** Name */
     n?: string;
     /** Frame number */
@@ -26,7 +26,7 @@ export interface SpriteParam extends TransParam {
     a?: number;
 }
 
-export default class Sprite extends Trans {
+export default class Sprite extends Object2D {
 
     children: Sprite[];
     param: SpriteParam;

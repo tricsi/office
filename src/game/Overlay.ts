@@ -3,10 +3,10 @@ import Txt from "../core/Video/Txt";
 import Sprite from "../core/Video/Sprite";
 import Emitter from "../core/Video/Emitter";
 import { rnd } from "../core/utils";
-import Trans, { TransParam } from "../core/Video/Trans";
-import { delay } from "../core/Engine/Scheduler";
+import Object2D, { ObjectParam } from "../core/Engine/Object2D";
+import { delay, schedule } from "../core/Engine/Scheduler";
 
-export default class Overlay extends Trans {
+export default class Overlay extends Object2D {
 
     back = new Sprite({ ...Config.ptc, s: 24, f: 3, c: "000a", l: 4, p: this });
     txt1 = new Txt({ ...Config.font, y: -12, ha: 1, l: 4, p: this }, "You are");
@@ -22,9 +22,10 @@ export default class Overlay extends Trans {
         }
     });
 
-    constructor(param: TransParam) {
+    constructor(param: ObjectParam) {
         super(param);
         this.hide(false);
+        schedule(this.emitter.update);
     }
 
     async show(text: string, emit: boolean) {
@@ -58,10 +59,6 @@ export default class Overlay extends Trans {
 
     emit(length?: number) {
         this.emitter.start(length);
-    }
-
-    update(delta: number) {
-        this.emitter.update(delta);
     }
 
 }

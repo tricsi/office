@@ -1,10 +1,10 @@
 import Txt from "../core/Video/Txt";
 import Config from "./Config";
 import Tile from "./Tile";
-import Trans from "../core/Video/Trans";
+import Object2D from "../core/Engine/Object2D";
 import { delay } from "../core/Engine/Scheduler";
 
-export default class Score extends Trans {
+export default class Score extends Object2D {
 
     scoreTxt = new Txt({ ...Config.tiny, c: "fff", ha: 1, va: 1, l: 3, p: this });
 

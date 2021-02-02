@@ -2,7 +2,7 @@ import Sprite from "../core/Video/Sprite";
 import { rnd } from "../core/utils";
 import { pointer } from "../core/Engine/Pointer";
 import Config from "./Config";
-import Trans from "../core/Video/Trans";
+import Object2D from "../core/Engine/Object2D";
 import { delay } from "../core/Engine/Scheduler";
 
 export enum Tileset {
@@ -89,7 +89,7 @@ export default class Tile {
         return this._sprite.box.has(pointer);
     }
 
-    constructor(x = 0, y = 0, type = 0, p?: Trans) {
+    constructor(x = 0, y = 0, type = 0, p?: Object2D) {
         this._type = type;
         this._sprite = new Sprite({ ...Config.tile, n: "", x, y, f: type, p });
     }

@@ -7,15 +7,16 @@ import { InputState } from "../core/Engine/Input";
 import Config from "./Config";
 import Score from "./Score";
 import Overlay from "./Overlay";
-import Trans from "../core/Video/Trans";
+import Object2D from "../core/Engine/Object2D";
 import { emit, GameEvent, listen } from "../core/Engine/Dispatcher";
+import Tiles from "../core/Video/Tiles";
 
 export interface GameData {
     hud: HudData;
     grid: number[];
 }
 
-export default class GameScene extends Trans {
+export default class GameScene extends Object2D {
 
     static store = "office_404";
     static load(): GameData {
@@ -29,6 +30,7 @@ export default class GameScene extends Trans {
 
     hud = new Hud({p: this});
     grid = new Grid({p: this}, 6, 6);
+    back: Tiles = new Tiles({ ...Config.tile, x: 8, y: 8, p: this }, { w: 6, h: 6, m: "az" });
     score = new Score({p: this});
     overlay = new Overlay({p: this});
     active = true;
@@ -101,7 +103,6 @@ export default class GameScene extends Trans {
 
     constructor(data?: GameData) {
         super();
-        this.add(this.hud, this.grid, this.score, this.overlay);
         listen("input", this.onInput)
             ("place", this.onPlace)
             ("merge", this.onMerge)

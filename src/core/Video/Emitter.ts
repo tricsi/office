@@ -1,7 +1,7 @@
 import Sprite, { SpriteParam } from "./Sprite";
 import Vec from "../Math/Vec";
 import { rnd } from "../utils";
-import Trans from "./Trans";
+import Object2D from "../Engine/Object2D";
 
 export interface EmitterProps {
     /** Gravity X */
@@ -30,7 +30,7 @@ export interface EmitterProps {
     ou?: (param: SpriteParam, time: number, loop: number) => void;
 }
 
-export default class Emitter extends Trans {
+export default class Emitter extends Object2D {
 
     protected static pos: Vec = new Vec();
 
@@ -69,7 +69,7 @@ export default class Emitter extends Trans {
         this.loop = false;
     }
 
-    update(delta: number) {
+    update = (delta: number) => {
         if (!this.loop && this.time > this.length) {
             if (this.finished) {
                 return;

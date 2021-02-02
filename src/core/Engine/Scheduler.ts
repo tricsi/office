@@ -2,21 +2,16 @@ import { now } from "../utils";
 
 export type Task = (delta: number) => void;
 
-const tasks: Task[] = [];
+let tasks = new Map<Task,number>();
 let time = now();
 let delta = 0;
 
-export function schedule(callback: Task) {
-    if (tasks.indexOf(callback) < 0) {
-        tasks.push(callback);
-    }
+export function schedule(callback: Task, priority = 0) {
+    tasks.has(callback) || (tasks = new Map<Task,number>([...tasks.set(callback, priority).entries()].sort((a, b) => a[1] - b[1])));
 }
 
 export function unschedule(callback: Task) {
-    const index = tasks.indexOf(callback);
-    if (index >= 0) {
-        tasks.splice(index, 1);
-    }
+    tasks.delete(callback);
 }
 
 export function update() {
@@ -24,7 +19,7 @@ export function update() {
     const current = now();
     delta = Math.min(current - time, 0.1);
     time = current;
-    for (const task of tasks) {
+    for (const [task] of tasks) {
         task(delta);
     }
 }

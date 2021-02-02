@@ -1,7 +1,7 @@
 import Txt from "../core/Video/Txt";
 import Config from "./Config";
 import Tile, { Tileset } from "./Tile";
-import Trans, { TransParam } from "../core/Video/Trans";
+import Object2D, { ObjectParam } from "../core/Engine/Object2D";
 import { delay } from "../core/Engine/Scheduler";
 import { emit } from "../core/Engine/Dispatcher";
 
@@ -12,7 +12,7 @@ export interface HudData {
     item: number;
 }
 
-export default class Hud extends Trans {
+export default class Hud extends Object2D {
 
     protected _data: HudData = { coin: 0, type: 1, move: 404, item: 12 };
     tile = new Tile(-40, -58, 0, this);
@@ -87,7 +87,7 @@ export default class Hud extends Trans {
         this.priceTxt.set({ a });
     }
 
-    constructor(param: TransParam) {
+    constructor(param: ObjectParam) {
         super(param);
         this.load(this._data);
     }

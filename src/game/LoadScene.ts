@@ -9,14 +9,14 @@ import { pointer } from "../core/Engine/Pointer";
 import Vec from "../core/Math/Vec";
 import Settings from "./Settings";
 import { WAVE_BASS, WAVE_CHIPTUNE, WAVE_ORGAN, SoundParam, WAVE_SINE, WAVE_TRIANGLE, WAVE_SQUARE } from "../core/Audio/Sound";
-import Trans from "../core/Video/Trans";
+import Object2D from "../core/Engine/Object2D";
 import { delay } from "../core/Engine/Scheduler";
 
-export default class LoadScene extends Trans {
+export default class LoadScene extends Object2D {
 
     data: GameData;
-    logo = new Txt({ ...Config.font, s: 2, c: "eee", va: 1, ha: 1, p: this });
     num = new Txt({ ...Config.font, y: -10, r: 0.3, c: "900", ha: 1, p: this });
+    logo = new Txt({ ...Config.font, s: 2, c: "eee", va: 1, ha: 1, p: this });
     newTxt = new Txt({ ...Config.font, y: 0, ha: 1, p: this });
     loadTxt = new Txt({ ...Config.font, y: 12, ha: 1, p: this });
     clickTxt = new Txt({ ...Config.tiny, y: 12, ha: 1, p: this });

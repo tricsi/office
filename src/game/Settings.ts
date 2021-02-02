@@ -3,16 +3,16 @@ import Config from "./Config";
 import { emit, GameEvent, listen } from "../core/Engine/Dispatcher";
 import { InputState } from "../core/Engine/Input";
 import { pointer } from "../core/Engine/Pointer";
-import Trans, { TransParam } from "../core/Video/Trans";
+import Object2D, { ObjectParam } from "../core/Engine/Object2D";
 import { delay } from "../core/Engine/Scheduler";
 
-export default class Settings extends Trans {
+export default class Settings extends Object2D {
 
     sound = 1;
     twtIcon = new Sprite({ ...Config.icon, x: -40, y: 84, f: 3, a: 0, p: this });
     sndIcon = new Sprite({ ...Config.icon, x: 40, y: 84, f: 1, a: 0, p: this });
 
-    constructor(param: TransParam) {
+    constructor(param: ObjectParam) {
         super(param);
         listen("input", this.onInput);
     }

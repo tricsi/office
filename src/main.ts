@@ -18,17 +18,15 @@ const shader = new Shader(gl, vertShader, fragShader);
 const image = new Image();
 const scenes = state.scenes;
 
-schedule(delta => {
-    scenes.forEach(s => s.update(delta));
-    ctx.add(...scenes).flush();
+schedule(() => {
+    const {uv, pos, color, count} = ctx.add(...scenes).flush();
     gl.clear(gl.COLOR_BUFFER_BIT);
-    const {uv, pos, color, count} = ctx;
     shader.uni("uProj", Camera.mat.data)
         .attr("aUv", 2, uv.slice(0, count * 8))
         .attr("aPos", 2, pos.slice(0, count * 8))
         .attr("aColor", 4, color.slice(0, count * 16));
     gl.drawElements(gl.TRIANGLES, count * 6, gl.UNSIGNED_SHORT, 0);
-});
+}, 9);
 
 on(image, "load", () => {
     const doc = document;

@@ -1,16 +1,13 @@
 import Tile, { Tileset } from "./Tile";
-import Tiles from "../core/Video/Tiles";
 import { rnd } from "../core/utils";
-import Config from "./Config";
-import Trans, { TransParam } from "../core/Video/Trans";
+import Object2D, { ObjectParam } from "../core/Engine/Object2D";
 import { emit } from "../core/Engine/Dispatcher";
 
-export default class Grid extends Trans {
+export default class Grid extends Object2D {
 
-    back: Tiles = new Tiles({ ...Config.tile, x: 8, y: 8, p: this }, { w: 6, h: 6, m: "az" });
     tiles: Tile[] = [];
 
-    constructor(param: TransParam, public width: number, public height: number) {
+    constructor(param: ObjectParam, public width: number, public height: number) {
         super(param);
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {

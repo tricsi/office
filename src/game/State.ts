@@ -1,7 +1,7 @@
-import Trans from "../core/Video/Trans";
+import Object2D from "../core/Engine/Object2D";
 
 export interface State {
-    scenes: Trans[];
+    scenes: Object2D[];
 }
 
 const state: State = {

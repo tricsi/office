@@ -1,6 +1,6 @@
 import texture from "../../asset/texture";
 import Sprite, { SpriteParam } from "./Sprite";
-import Trans from "./Trans";
+import Object2D from "../Engine/Object2D";
 
 const MAX_SPRITE = 4096;
 
@@ -22,8 +22,9 @@ export default class Context {
         }
     }
 
-    add(...sprites: Trans[]): Context {
+    add(...sprites: Object2D[]): Context {
         for (const sprite of sprites) {
+            sprite.each(s => this.add(s), true);
             if (sprite instanceof Sprite) {
                 const { n, l } = sprite.param;
                 const layers = this.layers;
@@ -34,22 +35,16 @@ export default class Context {
                     layers.get(l).push(sprite);
                 }
             }
-            if (sprite.children.length) {
-                this.add(...sprite.children);
-            }
         }
         return this;
     }
 
-    flush(
-        sort?: (a: Sprite, b: Sprite) => number,
-        layers: number[] | IterableIterator<number> = this.layers.keys()
-    ): Context {
+    flush(layers: number[] | IterableIterator<number> = this.layers.keys()): Context {
         this.count = 0;
         for (const layer of layers) {
             const sprites = this.layers.get(layer);
             if (sprites) {
-                (sort ? sprites.sort(sort) : sprites).forEach(sprite =>  this.addSprite(sprite));
+                sprites.forEach(s => this.addSprite(s));
                 sprites.length = 0;
             }
         }
