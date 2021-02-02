@@ -1,6 +1,6 @@
 export class Pool<T> {
 
-    private items: T[] = [];
+    protected items: T[] = [];
 
     constructor(protected factory: () => T) {}
 

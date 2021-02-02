@@ -1,38 +1,32 @@
-import Object2D, { ObjectParam } from "./Object2D";
 import { Pool } from "./Pool";
 
-export class Spawner extends Object2D {
+export class Spawner<T> extends Pool<T>{
 
     protected time = 0;
-    protected pool: Pool<Object2D>;
+    protected count = 0;
 
     constructor(
-        param: ObjectParam = {},
-        protected factory: () => Object2D,
-        protected init: (item: Object2D) => void,
+        protected factory: () => T,
+        protected init: (item: T) => void,
         public frq: number = 0,
         public limit: number = 0
     ) {
-        super(param);
-        this.pool = new Pool<Object2D>(factory);
+        super(factory)
     }
 
-    get(init?: (item: Object2D) => void): Object2D {
+    get(init?: (item: T) => void): T {
         let item = null;
-        if (!this.limit || this.children.length < this.limit) {
-            item = this.pool.get(init);
-            this.children.push(item);
-            item.param.p = this;
+        if (!this.limit || this.count < this.limit) {
+            item = this.get(init);
+            this.count++;
         }
         return item;
     }
 
-    put(item: Object2D) {
-        const index = this.children.indexOf(item);
-        if (index >= 0) {
-            this.children.splice(index, 1);
-            item.param.p = null;
-            this.pool.put(item);
+    put(item: T) {
+        if (this.count > 0) {
+            super.put(item);
+            this.count--;
         }
     }
 
