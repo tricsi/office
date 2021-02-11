@@ -1,3 +1,5 @@
+import Mat from "./Mat";
+
 export default class Vec {
 
     get length(): number {
@@ -65,6 +67,14 @@ export default class Vec {
     norm(): Vec {
         const length = this.length;
         length > 0 ? this.scale(1 / length) : this.set();
+        return this;
+    }
+
+    transform(mat: Mat): Vec {
+        const m = mat.data;
+        const { x, y } = this;
+        this.x = m[0] * x + m[3] * y + m[6];
+        this.y = m[1] * x + m[4] * y + m[7];
         return this;
     }
 

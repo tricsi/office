@@ -5,11 +5,20 @@ export default class Box {
     constructor(public x = 0, public y = 0, public w = 1, public h = w) {
     }
 
+    set(x = 0, y = 0, w = 1, h = 1) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        return this;
+    }
+
     add(box: Box) {
         this.x = Math.min(this.x, box.x);
         this.y = Math.min(this.y, box.y);
         this.w = Math.max(this.x + this.w, box.x + box.w) - this.x;
         this.h = Math.max(this.y + this.h, box.y + box.h) - this.y;
+        return this;
     }
 
     has(pos: Vec): boolean {
