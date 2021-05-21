@@ -78,11 +78,21 @@ export default class Shader {
             gl.uniform1f(location, value);
         } else {
             switch (size || value.length) {
-                case 2: gl.uniform2fv(location, value); break;
-                case 3: gl.uniform3fv(location, value); break;
-                case 4: gl.uniform4fv(location, value); break;
-                case 9: gl.uniformMatrix3fv(location, false, value); break;
-                case 16: gl.uniformMatrix4fv(location, false, value); break;
+                case 2:
+                    gl.uniform2fv(location, value);
+                    break;
+                case 3:
+                    gl.uniform3fv(location, value);
+                    break;
+                case 4:
+                    gl.uniform4fv(location, value);
+                    break;
+                case 9:
+                    gl.uniformMatrix3fv(location, false, value);
+                    break;
+                case 16:
+                    gl.uniformMatrix4fv(location, false, value);
+                    break;
             }
         }
         return this;

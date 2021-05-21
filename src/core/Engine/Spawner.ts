@@ -1,6 +1,6 @@
 import Pool from "./Pool";
 
-export default class Spawner<T> extends Pool<T>{
+export default class Spawner<T> extends Pool<T> {
 
     protected time = 0;
     protected count = 0;

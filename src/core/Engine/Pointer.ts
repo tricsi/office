@@ -1,23 +1,25 @@
-import { on } from "../utils";
 import Camera from "../Video/Camera";
-import { input } from "./Input";
-import Vec from "../Math/Vec";
-import { emit } from "./Dispatcher";
+import {data} from "./Input";
+import {emit, on} from "./Dispatcher";
+import {Vector} from "../Math/Math2D";
 
-export const pointer: Vec = new Vec();
+export const pointer: Vector = {x: Number.POSITIVE_INFINITY, y: Number.POSITIVE_INFINITY};
 
-function update(e: MouseEvent, down?: boolean) {
-    Camera.raycast(pointer.set(e.clientX, e.clientY));
-    emit({ name: "pointer", target: pointer });
+function update(e: MouseEvent, down?: number) {
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    Camera.raycast(pointer);
+    emit({name: "pointer", target: pointer});
     if (down !== undefined) {
+        const name = down ? "down" : "up";
         const target = "Mouse" + e.button;
-        input[target] = down;
-        emit({ name: "input", target, data: input });
+        data[target] = down;
+        emit({name, target, data});
     }
 }
 
 const body = document.body;
-on(body, "contextmenu", (e: MouseEvent) => e.preventDefault())
-    (body, "mousedown", (e: MouseEvent) => update(e, true))
-    (body, "mouseup", (e: MouseEvent) => update(e, false))
-    (body, "mousemove", (e: MouseEvent) => update(e));
+on("contextmenu", (e: MouseEvent) => e.preventDefault(), body)
+("mousedown", (e: MouseEvent) => update(e, 1), body)
+("mousemove", (e: MouseEvent) => update(e), body)
+("mouseup", (e: MouseEvent) => update(e, 0), body);

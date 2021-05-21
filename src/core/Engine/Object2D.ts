@@ -1,4 +1,4 @@
-import Mat from "../Math/Mat";
+import {mat3create, mat3reset, mat3rotate, mat3scale, mat3translate} from "../Math/Math2D";
 
 export interface ObjectParam {
     /** X coordinate */
@@ -19,7 +19,7 @@ export interface ObjectParam {
 
 export default class Object2D {
 
-    mat = new Mat();
+    mat = mat3create();
     param: ObjectParam = {};
     children: Object2D[] = [];
 
@@ -63,10 +63,11 @@ export default class Object2D {
 
     protected compute() {
         const { x, y, r, s, sx, sy, p } = this.param;
-        this.mat.reset(p?.mat)
-            .translate(x, y)
-            .rotate(r)
-            .scale(sx || s, sy || s);
+        const mat = this.mat;
+        mat3reset(mat, p?.mat);
+        mat3translate(mat, x, y);
+        mat3rotate(mat, r);
+        mat3scale(mat, sx || s, sy || s);
     }
 
 }

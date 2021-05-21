@@ -1,5 +1,5 @@
-import Box from "../Math/Box";
-import Object2D, { ObjectParam } from "../Engine/Object2D";
+import Object2D, {ObjectParam} from "../Engine/Object2D";
+import {box2add, box2create, mat3translate} from "../Math/Math2D";
 
 export interface SpriteParam extends ObjectParam {
     /** Name */
@@ -32,27 +32,28 @@ export default class Sprite extends Object2D {
     param: SpriteParam;
     mesh = new Float32Array(8);
     tint = new Float32Array(4);
-    box = new Box();
+    box = box2create();
 
     constructor(param: SpriteParam = {}) {
-        super({ n: "", f: 0, w: 0, h: 0, px: 0, py: 0, mh: 0, mv: 0, l: 0, c: "", a: 1, ...param });
+        super({n: "", f: 0, w: 0, h: 0, px: 0, py: 0, mh: 0, mv: 0, l: 0, c: "", a: 1, ...param});
         this.compute();
-        let { w, h, mh, mv } = this.param;
-        const params = { ...this.param, x: w, y: h, r: 0, px: w, py: h, mh: 0, mv: 0, p: this };
-        mh && new Sprite({ ...params, x: mh, sx: -1, sy: 1 });
-        mv && new Sprite({ ...params, y: mv, sx: 1, sy: -1 });
-        mh && mv && new Sprite({ ...params, x: mh, y: mv, sx: -1, sy: -1 });
+        let {w, h, mh, mv} = this.param;
+        const params = {...this.param, x: w, y: h, r: 0, px: w, py: h, mh: 0, mv: 0, p: this};
+        mh && new Sprite({...params, x: mh, sx: -1, sy: 1});
+        mv && new Sprite({...params, y: mv, sx: 1, sy: -1});
+        mh && mv && new Sprite({...params, x: mh, y: mv, sx: -1, sy: -1});
     }
 
     set(param: SpriteParam, childParam: SpriteParam = {}) {
         super.set(param, childParam);
-        this.children.forEach(child => child instanceof Sprite && this.box.add(child.box));
+        this.children.forEach(child => child instanceof Sprite && box2add(this.box, child.box));
     }
 
     protected compute() {
         super.compute();
-        const { w, h, px, py, c, a, p } = this.param;
-        const data = this.mat.translate(-px, -py).data;
+        const {w, h, px, py, c, a, p} = this.param;
+        const mat = this.mat;
+        mat3translate(mat, -px, -py);
 
         p instanceof Sprite ? this.tint.set(p.tint) : this.tint.fill(1);
         c.split("").forEach((v, i) => this.tint[i] *= parseInt(v, 16) / 15);
@@ -60,14 +61,14 @@ export default class Sprite extends Object2D {
 
         const mesh = this.mesh;
         mesh.set([
-            data[6],
-            data[7],
-            data[0] * w + data[6],
-            data[1] * w + data[7],
-            data[3] * h + data[6],
-            data[4] * h + data[7],
-            data[0] * w + data[3] * h + data[6],
-            data[1] * w + data[4] * h + data[7]
+            mat[6],
+            mat[7],
+            mat[0] * w + mat[6],
+            mat[1] * w + mat[7],
+            mat[3] * h + mat[6],
+            mat[4] * h + mat[7],
+            mat[0] * w + mat[3] * h + mat[6],
+            mat[1] * w + mat[4] * h + mat[7]
         ]);
 
         const box = this.box;

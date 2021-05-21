@@ -3,12 +3,11 @@ import Player from "../core/Audio/Player";
 import Hud, { HudData } from "./Hud";
 import Tile, { Tileset } from "./Tile";
 import { rnd } from "../core/utils";
-import { InputState } from "../core/Engine/Input";
 import Config from "./Config";
 import Score from "./Score";
 import Overlay from "./Overlay";
 import Object2D from "../core/Engine/Object2D";
-import { emit, GameEvent, listen } from "../core/Engine/Dispatcher";
+import { emit, IEvent, on } from "../core/Engine/Dispatcher";
 import Tiles from "../core/Video/Tiles";
 import { store } from "./State";
 
@@ -27,8 +26,8 @@ export default class GameScene extends Object2D {
     active = true;
     ended = false;
 
-    onInput = async (e: GameEvent<string, InputState>) => {
-        if (e.target === "Mouse0" && e.data[e.target]) {
+    onInput = async (e: IEvent<string>) => {
+        if (e.target === "Mouse0") {
             const { hud, grid } = this;
             if (this.ended) {
                 this.overlay.hide();
@@ -67,7 +66,7 @@ export default class GameScene extends Object2D {
         this.hud.show();
     };
 
-    onMerge = (e: GameEvent<Tile, number>) => {
+    onMerge = (e: IEvent<Tile, number>) => {
         const tile = e.target;
         this.coin(tile, e.data);
         if (tile.type === Tileset.PINATA) {
@@ -79,7 +78,7 @@ export default class GameScene extends Object2D {
         }
     };
 
-    onClear = (e: GameEvent<Tile>) => {
+    onClear = (e: IEvent<Tile>) => {
         const tile = e.target;
         this.coin(tile);
         if (!tile.isGold) {
@@ -88,13 +87,13 @@ export default class GameScene extends Object2D {
         }
     };
 
-    onALL = (e: GameEvent) => {
+    onALL = (e: IEvent) => {
         Player.play(e.name);
     };
 
     constructor(data?: GameData) {
         super();
-        listen("input", this.onInput)
+        on("down", this.onInput)
             ("place", this.onPlace)
             ("merge", this.onMerge)
             ("clear", this.onClear)

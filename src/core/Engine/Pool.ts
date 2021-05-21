@@ -2,7 +2,8 @@ export default class Pool<T> {
 
     protected items: T[] = [];
 
-    constructor(protected factory: () => T) {}
+    constructor(protected factory: () => T) {
+    }
 
     get(init?: (item: T) => void): T {
         let item = this.items.pop();

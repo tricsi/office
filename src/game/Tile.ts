@@ -4,6 +4,7 @@ import { pointer } from "../core/Engine/Pointer";
 import Config from "./Config";
 import Object2D from "../core/Engine/Object2D";
 import { delay } from "../core/Engine/Scheduler";
+import {box2vec2} from "../core/Math/Math2D";
 
 export enum Tileset {
     EMPTY,
@@ -86,7 +87,7 @@ export default class Tile {
     }
 
     get isHover(): boolean {
-        return this._sprite.box.has(pointer);
+        return box2vec2(this._sprite.box, pointer);
     }
 
     constructor(x = 0, y = 0, type = 0, p?: Object2D) {

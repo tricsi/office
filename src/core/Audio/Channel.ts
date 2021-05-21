@@ -1,4 +1,4 @@
-import Sound, { SoundParam } from "./Sound";
+import Sound, {SoundParam} from "./Sound";
 
 export type ChannelParam = [
     /** Sound parameters */
@@ -18,7 +18,7 @@ export default class Channel {
     length = 0;
 
     constructor(public param: ChannelParam) {
-        const [sound, notes, tempo] = param;
+        const [_, notes, tempo] = param;
         const sheet = notes.split("|");
         this.data = sheet
             .reduce((p, n, i) => p + (i % 2 ? ("," + sheet[i - 1]).repeat(parseInt(n) - 1) : (p ? "," : "") + n), "")
@@ -43,7 +43,7 @@ export default class Channel {
 
     render(ctx: OfflineAudioContext) {
         let time = 0;
-        const [sound, notes, tempo] = this.param;
+        const [sound, _, tempo] = this.param;
         const sounds: Sound[] = [];
         for (let i = 0; i < this.size; i++) {
             sounds.push(new Sound(sound, ctx));

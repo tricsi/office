@@ -1,5 +1,5 @@
 import texture from "../../asset/texture";
-import Sprite, { SpriteParam } from "./Sprite";
+import Sprite, {SpriteParam} from "./Sprite";
 import Object2D from "../Engine/Object2D";
 
 const MAX_SPRITE = 4096;
@@ -26,7 +26,7 @@ export default class Context {
         for (const sprite of sprites) {
             sprite.each(s => this.add(s), true);
             if (sprite instanceof Sprite) {
-                const { n, l } = sprite.param;
+                const {n, l} = sprite.param;
                 const layers = this.layers;
                 if (n) {
                     if (!layers.has(l)) {
@@ -63,7 +63,7 @@ export default class Context {
         }
     }
 
-    protected addUv({ n, f, w, h }: SpriteParam) {
+    protected addUv({n, f, w, h}: SpriteParam) {
         const [sw, sh] = texture.size;
         const p = this.margin / sw;
         let [x, y] = (texture.frames as any)[n];

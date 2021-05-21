@@ -1,26 +1,13 @@
-export function $(query: string, element?: Element): Element {
-    return (element || document).querySelector(query);
-}
+export const $ = (query: string, element: Element | Document = document) => element.querySelector(query);
 
-export function on(element: any, event: string, callback: EventListenerOrEventListenerObject, capture: any = false) {
-    element.addEventListener(event, callback, capture);
-    return on;
-}
+export const fs = async () => document.fullscreenElement || await document.body.requestFullscreen();
 
-export function now() {
-    return new Date().getTime() / 1000;
-}
+export const mobile = navigator.userAgent.match(/(Android|iPhone|iPad|iPod)/i);
 
-export async function fs() {
-    document.fullscreenElement || await document.body.requestFullscreen();
-}
-
-export function mobile() {
-    return navigator.userAgent.match(/(Android|iPhone|iPad|iPod)/i);
-}
-
-export function rnd(max: number = 1, seed: number = 0, round: boolean = false): number {
-    if (max <= 0) {
+export function rnd(max: number = 1, seed: number = 0, round: boolean = false): number
+{
+    if (max <= 0)
+    {
         return max;
     }
     const mod = 233280;

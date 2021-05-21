@@ -10,7 +10,7 @@ export type SoundParam = [
 ];
 
 export function waveFactory(factory: (n: number) => number): number[] {
-    return Array.from({ length: 8191 }, (_, n) => factory(n + 1));
+    return Array.from({length: 8191}, (_, n) => factory(n + 1));
 }
 
 export default class Sound {

@@ -1,5 +1,5 @@
-import Sound, { SoundParam } from "./Sound";
-import Channel, { ChannelParam } from "./Channel";
+import Sound, {SoundParam} from "./Sound";
+import Channel, {ChannelParam} from "./Channel";
 
 declare var window: any;
 window.AudioContext = window.AudioContext || window.webkitAudioContext;

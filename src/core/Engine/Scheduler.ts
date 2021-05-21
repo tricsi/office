@@ -1,26 +1,38 @@
-import { now } from "../utils";
+export type TaskFunc = (delta: number) => void;
+export type TaskData = [TaskFunc, number];
 
-export type Task = (delta: number) => void;
-
-let tasks = new Map<Task,number>();
-let time = now();
-let delta = 0;
-
-export function schedule(callback: Task, priority = 0) {
-    tasks.has(callback) || (tasks = new Map<Task,number>([...tasks.set(callback, priority).entries()].sort((a, b) => a[1] - b[1])));
+export interface SchedulerData {
+    time?: number;
+    scale?: number;
 }
 
-export function unschedule(callback: Task) {
-    tasks.delete(callback);
-}
+const defaultData: SchedulerData = {
+    time: 0,
+    scale: 1,
+};
 
-export function update() {
-    requestAnimationFrame(update);
-    const current = now();
-    delta = Math.min(current - time, 0.1);
-    time = current;
+const defaultTasks: TaskData[] = [];
+
+export function update(data: SchedulerData = defaultData, tasks = defaultTasks) {
+    const current = Date.now() / 1000;
+    const delta = Math.min((current - data.time) * data.scale, 0.1);
+    data.time = current;
     for (const [task] of tasks) {
         task(delta);
+    }
+    requestAnimationFrame(() => update(data, tasks));
+}
+
+export function schedule(callback: TaskFunc, priority = 0, tasks = defaultTasks) {
+    tasks.push([callback, priority]);
+    tasks.sort((a, b) => a[1] - b[1]);
+}
+
+export function unschedule(callback: TaskFunc, tasks = defaultTasks) {
+    for (let i = tasks.length - 1; i >= 0; i--) {
+        if (tasks[i][0] === callback) {
+            tasks.splice(i, 1);
+        }
     }
 }
 
@@ -41,3 +53,5 @@ export function delay(sec: number, tween?: (t: number) => void, stop?: () => boo
         callback(0);
     });
 }
+
+export default defaultData;

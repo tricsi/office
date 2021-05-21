@@ -1,42 +1,53 @@
-export interface GameEvent<T = any, D = any> {
-    /** Event name */
-    name: string;
-    /** Evvent target */
-    target?: T;
-    /** Event data */
-    data?: D;
-}
+export type IEvent<T = any, D = any> = { name: string, target?: T, data?: D };
+export type Listener = (event?: IEvent) => void;
+export type Listeners = Map<string, Listener[]>;
 
-export type Listener = (event?: GameEvent) => void;
-
-const listeners: { [event: string]: Listener[] } = { all: [] };
+const defaultListeners: Listeners = new Map<string, Listener[]>();
 
 function parse(event: string) {
     return event.replace(/[^-_\w]+/, " ").trim().split(" ").filter(v => !!v);
 }
 
-export function listen(event: string, listener: Listener) {
+export function on(
+    event: string,
+    listener: Listener | EventListenerOrEventListenerObject,
+    listeners: any = defaultListeners
+) {
     for (const name of parse(event)) {
-        if (!(name in listeners)) {
-            listeners[name] = [];
+        if (listeners instanceof Map) {
+            listeners.has(name) || listeners.set(name, []);
+            listeners.get(name).push(listener);
+            continue;
         }
-        listeners[name].push(listener);
+        listeners.addEventListener(event, listener, false);
     }
-    return listen;
+    return on;
 }
 
-export function mute(event: string, listener: Listener) {
+export function off(
+    event: string,
+    listener: Listener | EventListenerOrEventListenerObject,
+    listeners: any = defaultListeners
+) {
     for (const name of parse(event)) {
-        if (name in listeners) {
-            const index = listeners[name].indexOf(listener);
-            index >= 0 && listeners[name].splice(index, 1);
+        if (listeners instanceof Map) {
+            const data = listeners.get(name);
+            if (listeners) {
+                const index = data.indexOf(listener as Listener);
+                index >= 0 && data.splice(index, 1);
+            }
+            continue;
         }
+        listeners.removeEventListener(event, listener, false);
     }
-    return mute;
+    return off;
 }
 
-export function emit(event: GameEvent) {
-    listeners["all"].forEach(listener => listener(event));
-    listeners[event.name]?.forEach(listener => listener(event));
+export function emit(
+    event: IEvent,
+    listeners: any = defaultListeners
+) {
+    listeners.get("all")?.forEach((listener: Listener) => listener(event));
+    listeners.get(event.name)?.forEach((listener: Listener) => listener(event));
     return emit;
 }

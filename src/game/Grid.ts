@@ -1,7 +1,7 @@
-import Tile, { Tileset } from "./Tile";
-import { rnd } from "../core/utils";
-import Object2D, { ObjectParam } from "../core/Engine/Object2D";
-import { emit } from "../core/Engine/Dispatcher";
+import Tile, {Tileset} from "./Tile";
+import {rnd} from "../core/utils";
+import Object2D, {ObjectParam} from "../core/Engine/Object2D";
+import {emit} from "../core/Engine/Dispatcher";
 
 export default class Grid extends Object2D {
 
@@ -54,16 +54,15 @@ export default class Grid extends Object2D {
             if (type === Tileset.SELL || tile.isGold) {
                 // clear
                 await tile.clear();
-                emit({ name: "clear", target: tile });
+                emit({name: "clear", target: tile});
                 tile.type = Tileset.EMPTY;
                 await this.move(tile);
             }
-        }
-        else if (type !== Tileset.SELL) {
+        } else if (type !== Tileset.SELL) {
             // place
             await src.moveTo(tile);
             tile.type = type;
-            emit({ name: "place", target: tile });
+            emit({name: "place", target: tile});
             if (!tile.isMovable) {
                 await this.merge(tile);
             }
@@ -84,7 +83,7 @@ export default class Grid extends Object2D {
         while (count.filter(v => v > 2).length) {
             type = count.reduce((p, v, i) => !p && v > 2 ? i : p, 0);
             await tile.merge(type);
-            emit({ name: "merge", target: tile, data: count[type] });
+            emit({name: "merge", target: tile, data: count[type]});
             if (!tile.isWild) {
                 tile.upgrade(type);
             }
@@ -99,7 +98,7 @@ export default class Grid extends Object2D {
     async lock(tile: Tile) {
         let pinatas = this.tiles.filter(t => t.isMovable && t.isLocked);
         if (pinatas.length) {
-            emit({ name: "lock", target: tile, data: pinatas });
+            emit({name: "lock", target: tile, data: pinatas});
             await Promise.all(pinatas.map(t => t.lock()));
             while (pinatas.length) {
                 let i = pinatas.length > 1 ? rnd(pinatas.length - 1, 0, true) : 0;

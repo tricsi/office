@@ -1,17 +1,18 @@
-import { on } from "../utils";
-import { emit } from "./Dispatcher";
+import {emit, on} from "./Dispatcher";
 
-export type InputState = { [code: string]: boolean };
-export const input: InputState = {};
+export type InputData = { [code: string]: number };
+export const data: InputData = {};
 
-function update(e: KeyboardEvent, down: boolean): boolean {
+function update(e: KeyboardEvent, down: number): boolean {
     const target = e.code;
-    if (input[target] !== down) {
-        input[target] = down;
-        emit({ name: "input", target, data: input });
+    if (data[target] !== down) {
+        data[target] = down;
+        const name = down ? "down" : "up";
+        emit({name, target, data});
     }
     return false;
 }
 
-on(document, "keydown", (e: KeyboardEvent) => update(e, true))
-    (document, "keyup", (e: KeyboardEvent) => update(e, false));
+const doc = document
+on("keydown", (e: KeyboardEvent) => update(e, 1), doc)
+("keyup", (e: KeyboardEvent) => update(e, 0), doc);

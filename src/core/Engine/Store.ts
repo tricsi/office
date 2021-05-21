@@ -1,6 +1,7 @@
 export default class Store {
 
-    constructor(protected prefix: string, protected store = localStorage) { }
+    constructor(protected prefix: string, protected store = localStorage) {
+    }
 
     protected key(sufix: string): string {
         return this.prefix + sufix;
@@ -15,8 +16,7 @@ export default class Store {
     get(key = "") {
         try {
             return JSON.parse(this.store.getItem(this.key(key)));
-        }
-        catch (e) {
+        } catch (e) {
         }
         return null;
     }

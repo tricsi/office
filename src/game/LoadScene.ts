@@ -2,15 +2,14 @@ import Txt from "../core/Video/Txt";
 import Player from "../core/Audio/Player";
 import GameScene, { GameData } from "./GameScene";
 import Config from "./Config";
-import { GameEvent, listen, mute } from "../core/Engine/Dispatcher";
-import { InputState } from "../core/Engine/Input";
+import { IEvent, on, off } from "../core/Engine/Dispatcher";
 import state, { store } from "./State";
 import { pointer } from "../core/Engine/Pointer";
-import Vec from "../core/Math/Vec";
 import Settings from "./Settings";
 import { waveFactory, SoundParam } from "../core/Audio/Sound";
 import Object2D from "../core/Engine/Object2D";
 import { delay } from "../core/Engine/Scheduler";
+import {box2vec2} from "../core/Math/Math2D";
 
 export default class LoadScene extends Object2D {
 
@@ -24,11 +23,11 @@ export default class LoadScene extends Object2D {
     clicked = false;
 
     get load(): boolean {
-        return this.loadTxt.box.has(pointer)
+        return box2vec2(this.loadTxt.box, pointer);
     }
 
     get create(): boolean {
-        return this.newTxt.box.has(pointer)
+        return box2vec2(this.newTxt.box, pointer);
     }
 
     set sound(value: number) {
@@ -39,13 +38,13 @@ export default class LoadScene extends Object2D {
     constructor() {
         super();
         this.intro();
-        listen("coil", this.onCoil)
-            ("input", this.onInit);
+        on("coil", this.onCoil)
+            ("down", this.onInit);
     }
 
-    onInit = async (e: GameEvent<string, InputState>) => {
-        if (e.target === "Mouse0" && e.data[e.target]) {
-            mute("input", this.onInit);
+    onInit = async (e: IEvent<string>) => {
+        if (e.target === "Mouse0") {
+            off("down", this.onInit);
             this.clicked = true;
             this.clickTxt.text("Loading...");
             const mid: SoundParam = ["sine", 0.2, [0.2, 0], 0];
@@ -83,24 +82,24 @@ export default class LoadScene extends Object2D {
         }
     };
 
-    onInput = async (e: GameEvent<string, InputState>) => {
+    onInput = async (e:IEvent<string>) => {
         const load = this.load;
-        if (e.target === "Mouse0" && e.data[e.target] && (load || this.create)) {
+        if (e.target === "Mouse0" && (load || this.create)) {
             this.hide();
-            mute("input", this.onInput)
+            off("down", this.onInput)
                 ("pointer", this.onPointer);
             Player.play("music", true, "music");
-            listen("sound", (e) => this.sound = e.data);
+            on("sound", (e: IEvent<any,number>) => this.sound = e.data);
             state.scenes[1] = new GameScene(load ? this.data : null);
         }
     };
 
-    onPointer = (e: GameEvent<Vec>) => {
+    onPointer = () => {
         this.loadTxt.set({ c: this.load ? "0ff" : "fff" });
         this.newTxt.set({ c: this.create ? "0ff" : "fff" });
     };
 
-    onCoil = (e: GameEvent) => {
+    onCoil = () => {
         Config.price = Config.coil;
         this.logo.set({ c: "c90" });
     };
@@ -132,7 +131,7 @@ export default class LoadScene extends Object2D {
             this.newTxt.set({ a: t * t });
             this.loadTxt.set({ a: t * t });
         });
-        listen("input", this.onInput)
+        on("down", this.onInput)
             ("pointer", this.onPointer);
         await this.settings.show();
     }
