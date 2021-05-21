@@ -1,5 +1,6 @@
 import typescript from "@rollup/plugin-typescript";
 import image from "@rollup/plugin-image";
+import json from '@rollup/plugin-json';
 import glsl from "rollup-plugin-glsl";
 import bundle from "rollup-plugin-html-bundle";
 import { terser } from "rollup-plugin-terser";
@@ -14,6 +15,7 @@ export default {
         sourcemap: isDev
     },
     plugins: [
+        json(),
         typescript({
             noEmitOnError: false
         }),

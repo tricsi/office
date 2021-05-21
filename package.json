@@ -6,12 +6,13 @@
     "author": "@CsabaCsecskedi",
     "license": "MIT",
     "scripts": {
-        "start": "rollup -c -w",
+        "watch": "rollup -c -w",
         "build": "rollup -c && cd build && html-minifier --collapse-whitespace --remove-tag-whitespace --minify-css true dev.html > index.html && advzip -a build.zip index.html && advzip -z4 -i 99 build.zip",
         "sprite": "node sprite/sprite && advpng -z4 src/asset/*.png"
     },
     "devDependencies": {
         "@rollup/plugin-image": "^2.0.5",
+        "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-typescript": "^8.0.0",
         "@types/node": "^14.14.13",
         "advpng-bin": "^5.0.1",

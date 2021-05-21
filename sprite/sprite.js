@@ -21,7 +21,7 @@ texturePacker(images, {
     tinify: process.env.TINIFY !== undefined,
     tinifyKey: process.env.TINIFY,
     exporter: {
-        fileExt: "ts",
+        fileExt: "json",
         template: "./sprite/sprite.tpl",
     }
 }, (files, err) => {
