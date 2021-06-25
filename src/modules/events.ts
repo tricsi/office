@@ -44,10 +44,13 @@ export function off(
 }
 
 export function emit(
-    event: IEvent,
+    name: string,
+    target?: any,
+    data?: any,
     listeners: any = defaultListeners
 ) {
+    const event = {name, target, data};
     listeners.get("all")?.forEach((listener: Listener) => listener(event));
-    listeners.get(event.name)?.forEach((listener: Listener) => listener(event));
+    listeners.get(name)?.forEach((listener: Listener) => listener(event));
     return emit;
 }

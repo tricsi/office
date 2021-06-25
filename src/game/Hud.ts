@@ -102,7 +102,7 @@ export default class Hud extends Object2D {
     async buy(next: number) {
         const price = this.price;
         const type = this.shop.type;
-        emit({name: "buy", target: this.shop, data: price});
+        emit("buy", this.shop, price);
         await this.shop.moveTo(this.tile);
         this.item = next;
         this.coin -= price;

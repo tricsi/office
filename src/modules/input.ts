@@ -8,7 +8,7 @@ function update(e: KeyboardEvent, down: number): boolean {
     if (data[target] !== down) {
         data[target] = down;
         const name = down ? "down" : "up";
-        emit({name, target, data});
+        emit(name, target, data);
     }
     return false;
 }

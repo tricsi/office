@@ -9,12 +9,12 @@ function update(e: MouseEvent, down?: number) {
     pointer.x = e.clientX;
     pointer.y = e.clientY;
     Camera.raycast(pointer);
-    emit({name: "pointer", target: pointer});
+    emit("pointer", pointer);
     if (down !== undefined) {
         const name = down ? "down" : "up";
         const target = "Mouse" + e.button;
         data[target] = down;
-        emit({name, target, data});
+        emit(name, target, data);
     }
 }
 

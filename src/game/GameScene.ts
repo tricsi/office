@@ -44,13 +44,13 @@ export default class GameScene extends Object2D {
                 if (!grid.check()) {
                     this.clear();
                     this.ended = true;
-                    emit({ name: "fired" });
+                    emit("fired");
                     this.overlay.show("fired", false);
                 }
                 else if (!hud.move) {
                     this.clear();
                     this.ended = true;
-                    emit({ name: "promoted" });
+                    emit("promoted");
                     this.overlay.show("promoted", true);
                 }
                 else {

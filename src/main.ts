@@ -47,7 +47,7 @@ on("load", () => {
     update();
     on("click", () => mobile && fs(), doc);
     //@ts-ignore
-    doc.monetization && on(doc.monetization, "monetizationstart", () => emit({ name: "coil" }));
+    doc.monetization && on(doc.monetization, "monetizationstart", () => emit("coil"));
 }, image);
 
 image.src = texture;

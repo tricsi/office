@@ -26,7 +26,7 @@ export default class Settings extends Object2D {
                 this.sound = 0;
             }
             this.sndIcon.set({f: this.sound});
-            emit({name: "sound", data: this.sound});
+            emit("sound", this.sound);
         }
         if (box2vec2(this.twtIcon.box, pointer)) {
             const params = new URLSearchParams();

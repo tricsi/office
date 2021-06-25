@@ -88,7 +88,7 @@ export default class LoadScene extends Object2D {
             off("down", this.onInput)
                 ("pointer", this.onPointer);
             play("music", true, "music");
-            on("sound", (e: IEvent<any,number>) => this.sound = e.data);
+            on("sound", (e: IEvent<number>) => this.sound = e.target);
             state.scenes[1] = new GameScene(load ? this.data : null);
         }
     };
