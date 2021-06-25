@@ -39,11 +39,11 @@ export default class Tiles extends Sprite {
             if (f < 0) {
                 return;
             }
-            const {n, w, h, l, c} = this.param;
+            const {n, w, h, c} = this.param;
             const x = props.w * w / 2;
             const y = props.h * h / 2;
             new Sprite({
-                n, w, h, l, c, f,
+                n, w, h, c, f,
                 x: i % props.w * w + w / 2 - x,
                 y: Math.floor(i / props.w) * h + h / 2 - y,
                 px: w / 2,

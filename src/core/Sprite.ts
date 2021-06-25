@@ -1,5 +1,5 @@
-import Object2D, {ObjectParam} from "../Engine/Object2D";
-import {box2add, box2create, mat3translate} from "../Math/Math2D";
+import Object2D, {ObjectParam} from "./Object2D";
+import {box2add, box2create, mat3translate} from "../modules/math";
 
 export interface SpriteParam extends ObjectParam {
     /** Name */
@@ -18,8 +18,6 @@ export interface SpriteParam extends ObjectParam {
     mh?: number;
     /** Vertical Mirror distance (< 0 top; > 0 bottom;) */
     mv?: number;
-    /** Render layer */
-    l?: number;
     /** Tint Color */
     c?: string;
     /** Alpha */
@@ -35,7 +33,7 @@ export default class Sprite extends Object2D {
     box = box2create();
 
     constructor(param: SpriteParam = {}) {
-        super({n: "", f: 0, w: 0, h: 0, px: 0, py: 0, mh: 0, mv: 0, l: 0, c: "", a: 1, ...param});
+        super({n: "", f: 0, w: 0, h: 0, px: 0, py: 0, mh: 0, mv: 0, c: "", a: 1, ...param});
         this.compute();
         let {w, h, mh, mv} = this.param;
         const params = {...this.param, x: w, y: h, r: 0, px: w, py: h, mh: 0, mv: 0, p: this};

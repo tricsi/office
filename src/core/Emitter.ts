@@ -1,7 +1,7 @@
 import Sprite, {SpriteParam} from "./Sprite";
-import {rnd} from "../utils";
-import Object2D from "../Engine/Object2D";
-import {vec2create, vec2rotate, Vector} from "../Math/Math2D";
+import {rnd} from "../modules/utils";
+import Object2D from "./Object2D";
+import {vec2create, vec2rotate, Vector} from "../modules/math";
 
 export interface EmitterProps {
     /** Gravity X */

@@ -1,10 +1,10 @@
-import Sprite from "../core/Video/Sprite";
+import Sprite from "../core/Sprite";
 import Config from "./Config";
-import {emit, IEvent, on} from "../core/Engine/Dispatcher";
-import {pointer} from "../core/Engine/Pointer";
-import Object2D, {ObjectParam} from "../core/Engine/Object2D";
-import {delay} from "../core/Engine/Scheduler";
-import {box2vec2} from "../core/Math/Math2D";
+import {emit, IEvent, on} from "../modules/events";
+import {pointer} from "../modules/pointer";
+import Object2D, {ObjectParam} from "../core/Object2D";
+import {delay} from "../modules/scheduler";
+import {box2vec2} from "../modules/math";
 
 export default class Settings extends Object2D {
 

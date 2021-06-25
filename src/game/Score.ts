@@ -1,12 +1,12 @@
-import Txt from "../core/Video/Txt";
+import Txt from "../core/Txt";
 import Config from "./Config";
 import Tile from "./Tile";
-import Object2D from "../core/Engine/Object2D";
-import {delay} from "../core/Engine/Scheduler";
+import Object2D from "../core/Object2D";
+import {delay} from "../modules/scheduler";
 
 export default class Score extends Object2D {
 
-    scoreTxt = new Txt({...Config.tiny, c: "fff", ha: 1, va: 1, l: 3, p: this});
+    scoreTxt = new Txt({...Config.tiny, c: "fff", ha: 1, va: 1, p: this});
 
     async score(tile: Tile, coin: number) {
         const {x, y} = tile.sprite.param;

@@ -1,15 +1,14 @@
-import Txt from "../core/Video/Txt";
-import Player from "../core/Audio/Player";
+import Txt from "../core/Txt";
 import GameScene, { GameData } from "./GameScene";
 import Config from "./Config";
-import { IEvent, on, off } from "../core/Engine/Dispatcher";
+import { IEvent, on, off } from "../modules/events";
 import state, { store } from "./State";
-import { pointer } from "../core/Engine/Pointer";
+import { pointer } from "../modules/pointer";
 import Settings from "./Settings";
-import { waveFactory, SoundParam } from "../core/Audio/Sound";
-import Object2D from "../core/Engine/Object2D";
-import { delay } from "../core/Engine/Scheduler";
-import {box2vec2} from "../core/Math/Math2D";
+import Object2D from "../core/Object2D";
+import { delay } from "../modules/scheduler";
+import {box2vec2} from "../modules/math";
+import {audio, mixer, music, sound, SoundProps, wave, play} from "../modules/audio";
 
 export default class LoadScene extends Object2D {
 
@@ -31,8 +30,8 @@ export default class LoadScene extends Object2D {
     }
 
     set sound(value: number) {
-        Player.mixer("master", value > 0 ? 0.8 : 0);
-        Player.mixer("music", value === 1 ? 0.2 : 0);
+        mixer("master", value > 0 ? 0.8 : 0);
+        mixer("music", value === 1 ? 0.2 : 0);
     }
 
     constructor() {
@@ -47,30 +46,30 @@ export default class LoadScene extends Object2D {
             off("down", this.onInit);
             this.clicked = true;
             this.clickTxt.text("Loading...");
-            const mid: SoundParam = ["sine", 0.2, [0.2, 0], 0];
-            const solo: SoundParam = [waveFactory((n) => 4 / (n * Math.PI) * Math.sin(Math.PI * n * 0.18)), 0.3, [0.5, 0.2], 0];
-            const cord: SoundParam = [[1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1], 0.3, [0.1, 0.2, 0.1], 0];
-            const bass: SoundParam = [[1, .81, .21, .021], 0.2, [0.3, 0], 0];
-            const kick: SoundParam = ["sine", 0.3, [1, 0.1, 0], 0];
-            const snare: SoundParam = ["sine", 0.2, 0, [1, 0]];
-            await Player.init();
-            await Player.sound("place", kick, [110, 15, 0]);
-            await Player.sound("lock", ["triangle", 0.4, [0, 0.2], 0], [880, 220, 880]);
-            await Player.music("clear", [[["square", 0.2, [0.2, 0], 0], "1a6,1c7,1e7", 0.05]]);
-            await Player.music("coin", [[mid, "2a4,2a5", 0.05]]);
-            await Player.music("buy", [[mid, "2a6,2e7,2a7", 0.05]]);
-            await Player.sound("fired", ["triangle", 1, [0.3, 0], [0.2, 0]], [880, 110]);
-            await Player.music("promoted", [
+            const mid: SoundProps = ["sine", 0.2, [0.2, 0]];
+            const solo: SoundProps = [wave((n) => 4 / (n * Math.PI) * Math.sin(Math.PI * n * 0.18)), 0.3, [0.5, 0.2]];
+            const cord: SoundProps = [[1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1], 0.3, [0.1, 0.2, 0.1]];
+            const bass: SoundProps = ["sawtooth", 0.2, [0.3, 0]];
+            const kick: SoundProps = ["sine", 0.3, [1, 0.1, 0]];
+            const snare: SoundProps = ["custom", 0.2, [1, 0]];
+            await audio(22050);
+            await sound("place", kick, [110, 15, 0]);
+            await sound("lock", ["triangle", 0.4, [0, 0.2]], [880, 220, 880]);
+            await music("clear", [[["square", 0.2, [0.2, 0]], "1a6,1c7,1e7", 0.05]]);
+            await music("coin", [[mid, "2a4,2a5", 0.05]]);
+            await music("buy", [[mid, "2a6,2e7,2a7", 0.05]]);
+            await sound("fired", ["triangle", 1, [0.3, 0]], [880, 110]);
+            await music("promoted", [
                 [mid, "1f5a5c6,3f5a5c6,1f5a5c6,3g5b5d6,4a5c6e6", 0.1],
                 [solo, "1f6,3f6,1f6,3g6,4a6", 0.1],
                 [bass, "4f3,1f3,3g3,4a3", 0.1]
             ]);
-            await Player.music("pinata", [
+            await music("pinata", [
                 [mid, "2g4b4d5,1g4b4d5,1g4b4d5,4c5e5g5", 0.1],
                 [solo, "2g6,1g6,1g6,4c7", 0.1],
                 [bass, "2g2,1g2,1g2,4c3", 0.1]
             ]);
-            await Player.music("music", [
+            await music("music", [
                 [solo, "8|8|1a5,1,1a5,1,2d6,1e6,2f6,7,2e6,2,2e6,2c6,4g5,4,8f6,4e6,20,1a5,1,1a5,1,2d6,1e6,2f6,7,2e6,2,2e6,2c6,4g5,4,8d6,4c6,20|2", 0.125],
                 [cord, "8a4d5f5,8a4c5e5,8g4c5e5,8g4b4d5|10", 0.125],
                 [bass, "1a2,1a2,3f3,1d2,2,1a2,1a2,3e3,1c2,2,1g2,1g2,3e3,1c2,2,1g2,1g2,3d3,1b2,2|8", 0.125],
@@ -88,7 +87,7 @@ export default class LoadScene extends Object2D {
             this.hide();
             off("down", this.onInput)
                 ("pointer", this.onPointer);
-            Player.play("music", true, "music");
+            play("music", true, "music");
             on("sound", (e: IEvent<any,number>) => this.sound = e.data);
             state.scenes[1] = new GameScene(load ? this.data : null);
         }

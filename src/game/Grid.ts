@@ -1,17 +1,19 @@
 import Tile, {Tileset} from "./Tile";
-import {rnd} from "../core/utils";
-import Object2D, {ObjectParam} from "../core/Engine/Object2D";
-import {emit} from "../core/Engine/Dispatcher";
+import {rnd} from "../modules/utils";
+import Object2D, {ObjectParam} from "../core/Object2D";
+import {emit} from "../modules/events";
 
 export default class Grid extends Object2D {
 
     tiles: Tile[] = [];
+    front = new Object2D({p: this});
+    back = new Object2D({p: this});
 
     constructor(param: ObjectParam, public width: number, public height: number) {
         super(param);
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
-                this.tiles.push(new Tile(x * 16 - 40, y * 16 - 40, 0, this));
+                this.tiles.push(new Tile(x * 16 - 40, y * 16 - 40, 0, this.back, this.front));
             }
         }
         for (let y = 0; y < this.height; y++) {
@@ -77,7 +79,6 @@ export default class Grid extends Object2D {
     }
 
     async merge(tile: Tile) {
-        tile.layer = 2;
         let type = tile.type;
         let count = tile.count();
         while (count.filter(v => v > 2).length) {
@@ -92,7 +93,6 @@ export default class Grid extends Object2D {
         if (tile.isWild) {
             tile.upgrade(type);
         }
-        tile.layer = 0;
     }
 
     async lock(tile: Tile) {

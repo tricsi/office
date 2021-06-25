@@ -1,4 +1,4 @@
-import {emit, on} from "./Dispatcher";
+import {emit, on} from "./events";
 
 export type InputData = { [code: string]: number };
 export const data: InputData = {};

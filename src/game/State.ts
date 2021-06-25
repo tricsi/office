@@ -1,5 +1,5 @@
-import Object2D from "../core/Engine/Object2D";
-import Store from "../core/Engine/Store";
+import Object2D from "../core/Object2D";
+import Store from "../core/Store";
 
 export interface State {
     scenes: Object2D[];

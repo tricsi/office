@@ -1,7 +1,7 @@
-import Camera from "../Video/Camera";
-import {data} from "./Input";
-import {emit, on} from "./Dispatcher";
-import {Vector} from "../Math/Math2D";
+import Camera from "../core/Camera";
+import {data} from "./input";
+import {emit, on} from "./events";
+import {Vector} from "./math";
 
 export const pointer: Vector = {x: Number.POSITIVE_INFINITY, y: Number.POSITIVE_INFINITY};
 

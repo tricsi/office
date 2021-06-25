@@ -1,6 +1,6 @@
-import {$} from "../utils";
-import Object2D from "../Engine/Object2D";
-import {on} from "../Engine/Dispatcher";
+import {$} from "../modules/utils";
+import Object2D from "./Object2D";
+import {on} from "../modules/events";
 import {
     mat3project,
     mat3rotate,
@@ -11,7 +11,7 @@ import {
     vec2scale,
     vec2sub,
     Vector
-} from "../Math/Math2D";
+} from "../modules/math";
 
 class Camera extends Object2D {
 

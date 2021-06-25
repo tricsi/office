@@ -1,9 +1,9 @@
-import Txt from "../core/Video/Txt";
+import Txt from "../core/Txt";
 import Config from "./Config";
 import Tile, {Tileset} from "./Tile";
-import Object2D, {ObjectParam} from "../core/Engine/Object2D";
-import {delay} from "../core/Engine/Scheduler";
-import {emit} from "../core/Engine/Dispatcher";
+import Object2D, {ObjectParam} from "../core/Object2D";
+import {delay} from "../modules/scheduler";
+import {emit} from "../modules/events";
 
 export interface HudData {
     move: number;

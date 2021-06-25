@@ -1,4 +1,4 @@
-import {mat3create, mat3reset, mat3rotate, mat3scale, mat3translate} from "../Math/Math2D";
+import {mat3create, mat3reset, mat3rotate, mat3scale, mat3translate} from "../modules/math";
 
 export interface ObjectParam {
     /** X coordinate */
@@ -37,10 +37,12 @@ export default class Object2D {
     }
 
     set(param: ObjectParam, childParam: ObjectParam = {}) {
-        if (param.p !== undefined) {
-            this.param.p?.remove(this);
+        if (param.p !== this.param.p) {
+            if (param.p !== undefined) {
+                this.param.p?.remove(this);
+            }
+            param.p?.add(this);
         }
-        param.p?.add(this);
         this.param = { ...this.param, ...param };
         this.compute();
         this.each(child => child.set(childParam));

@@ -1,10 +1,10 @@
-import Sprite from "../core/Video/Sprite";
-import { rnd } from "../core/utils";
-import { pointer } from "../core/Engine/Pointer";
+import Sprite from "../core/Sprite";
+import { rnd } from "../modules/utils";
+import { pointer } from "../modules/pointer";
 import Config from "./Config";
-import Object2D from "../core/Engine/Object2D";
-import { delay } from "../core/Engine/Scheduler";
-import {box2vec2} from "../core/Math/Math2D";
+import Object2D from "../core/Object2D";
+import { delay } from "../modules/scheduler";
+import {box2vec2} from "../modules/math";
 
 export enum Tileset {
     EMPTY,
@@ -39,10 +39,6 @@ export default class Tile {
         this._type = value;
         this._empty = !value;
         this._sprite.set({ n: value ? "tile" : "", f: value });
-    }
-
-    set layer(l: number) {
-        this._sprite.set({ l });
     }
 
     get sprite(): Sprite {
@@ -90,7 +86,7 @@ export default class Tile {
         return box2vec2(this._sprite.box, pointer);
     }
 
-    constructor(x = 0, y = 0, type = 0, p?: Object2D) {
+    constructor(x = 0, y = 0, type = 0, p: Object2D, protected _layer = p) {
         this._type = type;
         this._sprite = new Sprite({ ...Config.tile, n: "", x, y, f: type, p });
     }
@@ -156,17 +152,17 @@ export default class Tile {
     }
 
     async moveTo(tile: Tile) {
-        const { x, y } = this._sprite.param;
+        const { x, y, p } = this._sprite.param;
         const to = tile._sprite.param;
+        this._sprite.set({p: this._layer, s: 1.1});
         await delay(0.3, t => {
             const tt = 1 - t * t;
             this._sprite.set({
                 x: to.x - ((to.x - x) * tt),
                 y: to.y - ((to.y - y) * tt),
-                l: 1
             });
         });
-        this._sprite.set({ x, y, l: 0 });
+        this._sprite.set({ x, y, p, s: 1 });
         this.type = Tileset.EMPTY;
     }
 

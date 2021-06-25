@@ -1,5 +1,5 @@
-import Sprite, {SpriteParam} from "./Sprite";
-import Object2D from "../Engine/Object2D";
+import Sprite, {SpriteParam} from "../core/Sprite";
+import Object2D from "../core/Object2D";
 
 export interface IContext {
     uv: Float32Array;
@@ -15,8 +15,6 @@ export interface ISpriteSheet {
     margin: number;
     frames: {[name: string]: [number, number]};
 }
-
-const defaultLayers = new Map<number, Sprite[]>();
 
 export function createCtx(size = 4096): IContext {
     const idx = new Uint16Array(size * 6);
@@ -34,32 +32,20 @@ export function createCtx(size = 4096): IContext {
     };
 }
 
-export function getLayers(sprites: Object2D[], layers = defaultLayers) {
-    for (let i = sprites.length - 1; i >= 0; i--) {
-        const sprite = sprites[i];
-        getLayers(sprite.children, layers);
-        if (sprite instanceof Sprite) {
-            const {n, l} = sprite.param;
-            if (n) {
-                layers.has(l) || layers.set(l, []);
-                layers.get(l).push(sprite);
-            }
-        }
-    }
-}
-
-export function flushLayers(
+export function flush(
     ctx: IContext,
     sheet: ISpriteSheet,
-    idx: number[] | IterableIterator<number> = defaultLayers.keys(),
-    layers = defaultLayers
+    objects: Object2D[],
+    reset = true
 ) {
-    ctx.count = 0;
-    for (const i of idx) {
-        const layer = layers.get(i);
-        if (layer) {
-            layer.forEach(sprite => addSprite(ctx, sprite, sheet));
-            layer.length = 0;
+    if (reset) {
+        ctx.count = 0;
+    }
+    for (let i = objects.length - 1; i >= 0; i--) {
+        const obj = objects[i];
+        flush(ctx, sheet, obj.children, false);
+        if (obj instanceof Sprite) {
+            addSprite(ctx, obj, sheet);
         }
     }
 }

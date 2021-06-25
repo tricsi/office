@@ -1,15 +1,15 @@
 import Grid from "./Grid";
-import Player from "../core/Audio/Player";
 import Hud, { HudData } from "./Hud";
 import Tile, { Tileset } from "./Tile";
-import { rnd } from "../core/utils";
+import { rnd } from "../modules/utils";
 import Config from "./Config";
 import Score from "./Score";
 import Overlay from "./Overlay";
-import Object2D from "../core/Engine/Object2D";
-import { emit, IEvent, on } from "../core/Engine/Dispatcher";
-import Tiles from "../core/Video/Tiles";
+import Object2D from "../core/Object2D";
+import { emit, IEvent, on } from "../modules/events";
+import Tiles from "../core/Tiles";
 import { store } from "./State";
+import { play } from "../modules/audio";
 
 export interface GameData {
     hud: HudData;
@@ -18,11 +18,11 @@ export interface GameData {
 
 export default class GameScene extends Object2D {
 
+    overlay = new Overlay({p: this});
+    score = new Score({p: this});
     hud = new Hud({p: this});
     grid = new Grid({p: this}, 6, 6);
     back: Tiles = new Tiles({ ...Config.tile, x: 8, y: 8, p: this }, { w: 6, h: 6, m: "az" });
-    score = new Score({p: this});
-    overlay = new Overlay({p: this});
     active = true;
     ended = false;
 
@@ -71,10 +71,10 @@ export default class GameScene extends Object2D {
         this.coin(tile, e.data);
         if (tile.type === Tileset.PINATA) {
             this.overlay.emit(0.4);
-            Player.play("pinata");
+            play("pinata");
         }
         else {
-            Player.play("coin");
+            play("coin");
         }
     };
 
@@ -88,7 +88,7 @@ export default class GameScene extends Object2D {
     };
 
     onALL = (e: IEvent) => {
-        Player.play(e.name);
+        play(e.name);
     };
 
     constructor(data?: GameData) {
