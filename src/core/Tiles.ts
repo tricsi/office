@@ -1,12 +1,14 @@
+import Object2D from "./Object2D";
 import Sprite, {SpriteParam} from "./Sprite";
 
 export interface TileProps {
+    t: SpriteParam;
     w: number;
     h: number;
     m: string;
 }
 
-export default class Tiles extends Sprite {
+export default class Tiles extends Object2D {
 
     public data: number[];
 
@@ -39,21 +41,21 @@ export default class Tiles extends Sprite {
             if (f < 0) {
                 return;
             }
-            const {n, w, h, c} = this.param;
+            const {w, h} = props.t;
             const x = props.w * w / 2;
             const y = props.h * h / 2;
             new Sprite({
-                n, w, h, c, f,
+                ...props.t,
                 x: i % props.w * w + w / 2 - x,
                 y: Math.floor(i / props.w) * h + h / 2 - y,
                 px: w / 2,
                 py: h / 2,
                 sx: flips[i] & 1 ? -1 : 1,
                 sy: flips[i] & 2 ? -1 : 1,
-                p: this
+                p: this,
+                f
             });
         });
-        this.param.n = "";
     }
 
 }

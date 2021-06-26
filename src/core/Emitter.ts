@@ -106,7 +106,7 @@ export default class Emitter extends Object2D {
             if (this.time < 0 || this.time < time || (!this.loop && this.length < t * loop + t - shift)) {
                 values.a = 0;
             }
-            sprite.set(values, null);
+            sprite.set(values);
         });
     }
 
