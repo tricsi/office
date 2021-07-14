@@ -49,7 +49,7 @@ export function emit(
     data?: any,
     listeners: any = defaultListeners
 ) {
-    const event = {name, target, data};
+    const event = { name, target, data };
     listeners.get("all")?.forEach((listener: Listener) => listener(event));
     listeners.get(name)?.forEach((listener: Listener) => listener(event));
     return emit;

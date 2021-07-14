@@ -120,7 +120,7 @@ function createChannel(props: ChannelProps): Channel {
     return { props, data, size, length };
 }
 
-function playChannel({props, data, size}: Channel, ctx: AudioContext | OfflineAudioContext = CONTEXT) {
+function playChannel({ props, data, size }: Channel, ctx: AudioContext | OfflineAudioContext = CONTEXT) {
     const sounds: Sound[] = [];
     for (let i = 0; i < size; i++) {
         sounds.push(createSound(props[0], ctx));

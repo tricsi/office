@@ -1,4 +1,4 @@
-import Sprite, {SpriteParam} from "./Sprite";
+import Sprite, { SpriteParam } from "./Sprite";
 
 export interface TileProps {
     w: number;
@@ -12,7 +12,7 @@ export default class Tiles extends Sprite {
 
     constructor(param: SpriteParam, public props: TileProps) {
         super(param);
-        const {w, h, m} = props;
+        const { w, h, m } = props;
         const data = new Array(w * h).fill(-1);
         const flips = new Array(w * h).fill(0);
         let i = 0;
@@ -39,7 +39,7 @@ export default class Tiles extends Sprite {
             if (f < 0) {
                 return;
             }
-            const {n, w, h, c} = this.param;
+            const { n, w, h, c } = this.param;
             const x = props.w * w / 2;
             const y = props.h * h / 2;
             new Sprite({

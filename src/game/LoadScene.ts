@@ -7,8 +7,8 @@ import { pointer } from "../modules/pointer";
 import Settings from "./Settings";
 import Object2D from "../core/Object2D";
 import { delay } from "../modules/scheduler";
-import {box2vec2} from "../modules/math";
-import {audio, mixer, music, sound, SoundProps, wave, play} from "../modules/audio";
+import { box2vec2 } from "../modules/math";
+import { audio, mixer, music, sound, SoundProps, wave, play } from "../modules/audio";
 
 export default class LoadScene extends Object2D {
 
@@ -18,7 +18,7 @@ export default class LoadScene extends Object2D {
     newTxt = new Txt({ ...Config.font, y: 0, ha: 1, p: this });
     loadTxt = new Txt({ ...Config.font, y: 12, ha: 1, p: this });
     clickTxt = new Txt({ ...Config.tiny, y: 12, ha: 1, p: this });
-    settings = new Settings({p: this});
+    settings = new Settings({ p: this });
     clicked = false;
 
     get load(): boolean {
@@ -81,7 +81,7 @@ export default class LoadScene extends Object2D {
         }
     };
 
-    onInput = async (e:IEvent<string>) => {
+    onInput = async (e: IEvent<string>) => {
         const load = this.load;
         if (e.target === "Mouse0" && (load || this.create)) {
             this.hide();

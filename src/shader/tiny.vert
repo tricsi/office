@@ -1,4 +1,3 @@
-precision lowp float;
 
 attribute vec2 aUv;
 attribute vec2 aPos;

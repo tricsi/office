@@ -1,4 +1,4 @@
-import {mat3create, mat3reset, mat3rotate, mat3scale, mat3translate} from "../modules/math";
+import { mat3create, mat3reset, mat3rotate, mat3scale, mat3translate } from "../modules/math";
 
 export interface ObjectParam {
     /** X coordinate */

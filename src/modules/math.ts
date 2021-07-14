@@ -14,10 +14,10 @@ export interface Box extends Vector {
 
 export type Object2D = Vector | Circle | Box;
 
-export const ZERO: Vector = {x: 0, y: 0};
+export const ZERO: Vector = { x: 0, y: 0 };
 
 export function vec2create(x = 0, y = 0): Vector {
-    return {x, y};
+    return { x, y };
 }
 
 export function vec2copy(out: Vector, vec: Vector): Vector {
@@ -51,7 +51,7 @@ export function vec2scale2(out: Vector, scale: Vector): Vector {
 }
 
 export function vec2rotate(out: Vector, angle: number): Vector {
-    const {x, y} = out;
+    const { x, y } = out;
     const s = Math.sin(angle);
     const c = Math.cos(angle);
     out.x = x * c - y * s;
@@ -60,7 +60,7 @@ export function vec2rotate(out: Vector, angle: number): Vector {
 }
 
 export function vec2prep(out: Vector): Vector {
-    const {x, y} = out;
+    const { x, y } = out;
     out.x = y;
     out.y = -x;
     return out;
@@ -108,7 +108,7 @@ export function vec2projectN(out: Vector, vec: Vector): Vector {
 }
 
 export function vec2reflect(out: Vector, axis: Vector): Vector {
-    const {x, y} = out;
+    const { x, y } = out;
     vec2scale(vec2project(out, axis), 2);
     out.x -= x;
     out.y -= y;
@@ -116,7 +116,7 @@ export function vec2reflect(out: Vector, axis: Vector): Vector {
 }
 
 export function vec2reflectN(out: Vector, axis: Vector): Vector {
-    const {x, y} = out;
+    const { x, y } = out;
     vec2scale(vec2projectN(out, axis), 2);
     out.x -= x;
     out.y -= y;
@@ -124,18 +124,18 @@ export function vec2reflectN(out: Vector, axis: Vector): Vector {
 }
 
 export function obj2transform(out: Object2D, mat: Float32Array): Object2D {
-    const {x, y} = out;
+    const { x, y } = out;
     out.x = mat[0] * x + mat[3] * y + mat[6];
     out.y = mat[1] * x + mat[4] * y + mat[7];
     return out;
 }
 
 export function box2create(x = 0, y = 0, w = 1, h = 1): Box {
-    return {x, y, w, h};
+    return { x, y, w, h };
 }
 
 export function box2add(out: Box, box: Box): Box {
-    const {x, y, w, h} = out;
+    const { x, y, w, h } = out;
     out.x = Math.min(x, box.x);
     out.y = Math.min(y, box.y);
     out.w = Math.max(x + w, box.x + box.w) - out.x;

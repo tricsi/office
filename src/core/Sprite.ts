@@ -1,5 +1,5 @@
-import Object2D, {ObjectParam} from "./Object2D";
-import {box2add, box2create, mat3translate} from "../modules/math";
+import Object2D, { ObjectParam } from "./Object2D";
+import { box2add, box2create, mat3translate } from "../modules/math";
 
 export interface SpriteParam extends ObjectParam {
     /** Name */
@@ -33,13 +33,13 @@ export default class Sprite extends Object2D {
     box = box2create();
 
     constructor(param: SpriteParam = {}) {
-        super({n: "", f: 0, w: 0, h: 0, px: 0, py: 0, mh: 0, mv: 0, c: "", a: 1, ...param});
+        super({ n: "", f: 0, w: 0, h: 0, px: 0, py: 0, mh: 0, mv: 0, c: "", a: 1, ...param });
         this.compute();
-        let {w, h, mh, mv} = this.param;
-        const params = {...this.param, x: w, y: h, r: 0, px: w, py: h, mh: 0, mv: 0, p: this};
-        mh && new Sprite({...params, x: mh, sx: -1, sy: 1});
-        mv && new Sprite({...params, y: mv, sx: 1, sy: -1});
-        mh && mv && new Sprite({...params, x: mh, y: mv, sx: -1, sy: -1});
+        let { w, h, mh, mv } = this.param;
+        const params = { ...this.param, x: w, y: h, r: 0, px: w, py: h, mh: 0, mv: 0, p: this };
+        mh && new Sprite({ ...params, x: mh, sx: -1, sy: 1 });
+        mv && new Sprite({ ...params, y: mv, sx: 1, sy: -1 });
+        mh && mv && new Sprite({ ...params, x: mh, y: mv, sx: -1, sy: -1 });
     }
 
     set(param: SpriteParam, childParam: SpriteParam = {}) {
@@ -49,7 +49,7 @@ export default class Sprite extends Object2D {
 
     protected compute() {
         super.compute();
-        const {w, h, px, py, c, a, p} = this.param;
+        const { w, h, px, py, c, a, p } = this.param;
         const mat = this.mat;
         mat3translate(mat, -px, -py);
 

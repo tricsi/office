@@ -18,10 +18,10 @@ export interface GameData {
 
 export default class GameScene extends Object2D {
 
-    overlay = new Overlay({p: this});
-    score = new Score({p: this});
-    hud = new Hud({p: this});
-    grid = new Grid({p: this}, 6, 6);
+    overlay = new Overlay({ p: this });
+    score = new Score({ p: this });
+    hud = new Hud({ p: this });
+    grid = new Grid({ p: this }, 6, 6);
     back: Tiles = new Tiles({ ...Config.tile, x: 8, y: 8, p: this }, { w: 6, h: 6, m: "az" });
     active = true;
     ended = false;

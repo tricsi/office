@@ -31,7 +31,7 @@ export function createColor(r = 0, g = 0, b = 0, a = 1) {
     return new Float32Array([r, g, b, a]);
 }
 
-export function bindBuffer(gl: WebGLRenderingContext, name: string,  data?: Float32Array | Uint16Array, type = gl.ARRAY_BUFFER, buffers = defaultBuffers) {
+export function bindBuffer(gl: WebGLRenderingContext, name: string, data?: Float32Array | Uint16Array, type = gl.ARRAY_BUFFER, buffers = defaultBuffers) {
     buffers.has(name) || buffers.set(name, gl.createBuffer());
     gl.bindBuffer(type, buffers.get(name));
     data && gl.bufferData(type, data, gl.STATIC_DRAW);

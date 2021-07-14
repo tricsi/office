@@ -1,9 +1,9 @@
 import Txt from "../core/Txt";
 import Config from "./Config";
-import Tile, {Tileset} from "./Tile";
-import Object2D, {ObjectParam} from "../core/Object2D";
-import {delay} from "../modules/scheduler";
-import {emit} from "../modules/events";
+import Tile, { Tileset } from "./Tile";
+import Object2D, { ObjectParam } from "../core/Object2D";
+import { delay } from "../modules/scheduler";
+import { emit } from "../modules/events";
 
 export interface HudData {
     move: number;
@@ -14,15 +14,15 @@ export interface HudData {
 
 export default class Hud extends Object2D {
 
-    protected _data: HudData = {coin: 0, type: 1, move: 404, item: 12};
+    protected _data: HudData = { coin: 0, type: 1, move: 404, item: 12 };
     tile = new Tile(-40, -58, 0, this);
     shop = new Tile(0, 70, 0, this);
-    moveLbl = new Txt({...Config.tiny, x: -30, y: -62, va: 1, p: this}, "Days");
-    moveTxt = new Txt({...Config.font, x: -30, y: -55, va: 1, p: this});
-    coinLbl = new Txt({...Config.tiny, x: 48, y: -62, va: 1, ha: 2, p: this}, "Money");
-    coinTxt = new Txt({...Config.font, x: 48, y: -55, va: 1, ha: 2, p: this});
-    infoTxt = new Txt({...Config.tiny, y: 52, ha: 1, p: this}, "Click on empty tiles");
-    priceTxt = new Txt({...Config.font, y: 84, va: 1, ha: 1, p: this}, "$9999");
+    moveLbl = new Txt({ ...Config.tiny, x: -30, y: -62, va: 1, p: this }, "Days");
+    moveTxt = new Txt({ ...Config.font, x: -30, y: -55, va: 1, p: this });
+    coinLbl = new Txt({ ...Config.tiny, x: 48, y: -62, va: 1, ha: 2, p: this }, "Money");
+    coinTxt = new Txt({ ...Config.font, x: 48, y: -55, va: 1, ha: 2, p: this });
+    infoTxt = new Txt({ ...Config.tiny, y: 52, ha: 1, p: this }, "Click on empty tiles");
+    priceTxt = new Txt({ ...Config.font, y: 84, va: 1, ha: 1, p: this }, "$9999");
     infoIdx = 0;
     infos = [
         "Merge 3 objects",
@@ -83,8 +83,8 @@ export default class Hud extends Object2D {
 
     set enabled(value: boolean) {
         const a = value ? 1 : 0.5;
-        this.shop.sprite.set({a});
-        this.priceTxt.set({a});
+        this.shop.sprite.set({ a });
+        this.priceTxt.set({ a });
     }
 
     constructor(param: ObjectParam) {
@@ -113,9 +113,9 @@ export default class Hud extends Object2D {
     }
 
     async info(text: string) {
-        await delay(0.2, t => this.infoTxt.set({a: 1 - t * t}));
+        await delay(0.2, t => this.infoTxt.set({ a: 1 - t * t }));
         this.infoTxt.text(text);
-        await delay(0.3, t => this.infoTxt.set({a: t * t}));
+        await delay(0.3, t => this.infoTxt.set({ a: t * t }));
     }
 
     show() {

@@ -4,7 +4,7 @@ import { pointer } from "../modules/pointer";
 import Config from "./Config";
 import Object2D from "../core/Object2D";
 import { delay } from "../modules/scheduler";
-import {box2vec2} from "../modules/math";
+import { box2vec2 } from "../modules/math";
 
 export enum Tileset {
     EMPTY,
@@ -154,7 +154,7 @@ export default class Tile {
     async moveTo(tile: Tile) {
         const { x, y, p } = this._sprite.param;
         const to = tile._sprite.param;
-        this._sprite.set({p: this._layer, s: 1.1});
+        this._sprite.set({ p: this._layer, s: 1.1 });
         await delay(0.3, t => {
             const tt = 1 - t * t;
             this._sprite.set({

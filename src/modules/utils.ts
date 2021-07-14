@@ -4,10 +4,8 @@ export const fs = async () => document.fullscreenElement || await document.body.
 
 export const mobile = navigator.userAgent.match(/(Android|iPhone|iPad|iPod)/i);
 
-export function rnd(max: number = 1, seed: number = 0, round: boolean = false): number
-{
-    if (max <= 0)
-    {
+export function rnd(max: number = 1, seed: number = 0, round: boolean = false): number {
+    if (max <= 0) {
         return max;
     }
     const mod = 233280;

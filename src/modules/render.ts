@@ -1,4 +1,4 @@
-import Sprite, {SpriteParam} from "../core/Sprite";
+import Sprite, { SpriteParam } from "../core/Sprite";
 import Object2D from "../core/Object2D";
 
 export interface IContext {
@@ -13,7 +13,7 @@ export interface IContext {
 export interface ISpriteSheet {
     size: [number, number];
     margin: number;
-    frames: {[name: string]: [number, number]};
+    frames: { [name: string]: [number, number] };
 }
 
 export function createCtx(size = 4096): IContext {
@@ -51,8 +51,8 @@ export function flush(
 }
 
 function addSprite(ctx: IContext, sprite: Sprite, sheet: ISpriteSheet) {
-    const {param, tint, mesh} = sprite;
-    const {pos, color, count, size} = ctx;
+    const { param, tint, mesh } = sprite;
+    const { pos, color, count, size } = ctx;
     if (param.n in sheet.frames && count < size) {
         addUvs(ctx, param, sheet);
         pos.set(mesh, count * 8);
@@ -65,7 +65,7 @@ function addSprite(ctx: IContext, sprite: Sprite, sheet: ISpriteSheet) {
 }
 
 function addUvs(ctx: IContext, param: SpriteParam, sheet: ISpriteSheet) {
-    let {n, f, w, h} = param;
+    let { n, f, w, h } = param;
     const [sw, sh] = sheet.size;
     const p = sheet.margin / sw;
     let [x, y] = sheet.frames[n];

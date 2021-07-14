@@ -1,13 +1,13 @@
-import Tile, {Tileset} from "./Tile";
-import {rnd} from "../modules/utils";
-import Object2D, {ObjectParam} from "../core/Object2D";
-import {emit} from "../modules/events";
+import Tile, { Tileset } from "./Tile";
+import { rnd } from "../modules/utils";
+import Object2D, { ObjectParam } from "../core/Object2D";
+import { emit } from "../modules/events";
 
 export default class Grid extends Object2D {
 
     tiles: Tile[] = [];
-    front = new Object2D({p: this});
-    back = new Object2D({p: this});
+    front = new Object2D({ p: this });
+    back = new Object2D({ p: this });
 
     constructor(param: ObjectParam, public width: number, public height: number) {
         super(param);
