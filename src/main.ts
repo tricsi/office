@@ -19,7 +19,8 @@ const program = createProgram(gl, compileShader(gl, gl.VERTEX_SHADER, vertShader
 const image = new Image();
 const scenes = state.scenes;
 
-schedule(() => {
+schedule(delta => {
+    scenes.forEach(scene => scene.update(delta));
     flush(ctx, <any>sheet, scenes);
     gl.clear(gl.COLOR_BUFFER_BIT);
     setUniform(gl, program, "uProj", Camera.mat);

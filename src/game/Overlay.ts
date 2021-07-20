@@ -3,8 +3,8 @@ import Txt from "../core/Txt";
 import Sprite from "../core/Sprite";
 import Emitter from "../core/Emitter";
 import { rnd } from "../modules/utils";
-import Object2D, { ObjectParam } from "../core/Object2D";
-import { delay, schedule } from "../modules/scheduler";
+import Object2D from "../core/Object2D";
+import { delay } from "../modules/scheduler";
 
 export default class Overlay extends Object2D {
 
@@ -20,11 +20,6 @@ export default class Overlay extends Object2D {
         }
     });
     back = new Sprite({ ...Config.ptc, s: 24, f: 3, c: "000a", a: 0, p: this });
-
-    constructor(param: ObjectParam) {
-        super(param);
-        schedule(this.emitter.update);
-    }
 
     async show(text: string, emit: boolean) {
         if (emit) {

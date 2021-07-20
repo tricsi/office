@@ -30,7 +30,7 @@ export default class Spawner<T> extends Pool<T> {
         }
     }
 
-    update = (delta: number) => {
+    update(delta: number) {
         if (this.frq <= 0) {
             return;
         }

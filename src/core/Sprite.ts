@@ -42,8 +42,8 @@ export default class Sprite extends Object2D {
         mh && mv && new Sprite({ ...params, x: mh, y: mv, sx: -1, sy: -1 });
     }
 
-    set(param: SpriteParam, childParam: SpriteParam = {}) {
-        super.set(param, childParam);
+    set(param: SpriteParam) {
+        super.set(param);
         this.children.forEach(child => child instanceof Sprite && box2add(this.box, child.box));
     }
 

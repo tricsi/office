@@ -36,7 +36,11 @@ export default class Object2D {
         }
     }
 
-    set(param: ObjectParam, childParam: ObjectParam = {}) {
+    update(delta: number) {
+        this.each(child => child.update(delta));
+    }
+
+    set(param: ObjectParam) {
         if (param.p !== this.param.p) {
             if (param.p !== undefined) {
                 this.param.p?.remove(this);
@@ -45,7 +49,7 @@ export default class Object2D {
         }
         this.param = { ...this.param, ...param };
         this.compute();
-        this.each(child => child.set(childParam));
+        this.each(child => child.compute());
     }
 
     protected add(child: Object2D) {

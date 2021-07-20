@@ -4,7 +4,6 @@ import { on } from "../modules/events";
 import {
     mat3multiply,
     mat3project,
-    mat3reset,
     mat3rotate,
     mat3scale,
     mat3translate,
@@ -24,19 +23,20 @@ export interface CameraParam extends ObjectParam
 
 class Camera extends Object2D {
 
-    canvas = $("#game") as HTMLCanvasElement;
-    gl = this.canvas.getContext("webgl");
+    gl: WebGLRenderingContext;
     param: CameraParam;
 
     constructor() {
         super();
-        this.param = { w: this.canvas.width, h: this.canvas.height, z: 1, ...this.param };
+        const canvas = $("#game") as HTMLCanvasElement;
+        this.gl = canvas.getContext("webgl");
+        this.param = { w: canvas.width, h: canvas.height, z: 1, ...this.param };
         this.resize();
         on("resize", () => this.resize(), window);
     }
 
     resize() {
-        const canvas = this.canvas;
+        const canvas = this.gl.canvas as HTMLCanvasElement;
         const { w, h } = this.param;
         const z = Math.ceil(canvas.clientWidth / w);
         canvas.width = w * z;
@@ -48,7 +48,7 @@ class Camera extends Object2D {
 
     compute() {
         const { x, y, z, r, s, p } = this.param;
-        const { width, height } = this.canvas;
+        const { width, height } = this.gl.canvas;
         
         const mat = mat3project(this.mat, width, height);
         p && mat3multiply(mat, p.mat);

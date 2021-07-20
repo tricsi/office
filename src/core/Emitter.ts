@@ -69,7 +69,7 @@ export default class Emitter extends Object2D {
         this.loop = false;
     }
 
-    update = (delta: number) => {
+    update(delta: number) {
         if (!this.loop && this.time > this.length) {
             if (this.finished) {
                 return;
@@ -106,7 +106,7 @@ export default class Emitter extends Object2D {
             if (this.time < 0 || this.time < time || (!this.loop && this.length < t * loop + t - shift)) {
                 values.a = 0;
             }
-            sprite.set(values, null);
+            sprite.set(values);
         });
     }
 
