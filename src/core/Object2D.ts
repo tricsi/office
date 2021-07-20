@@ -28,28 +28,25 @@ export default class Object2D {
         param.p?.add(this);
     }
 
-    each(callback: (item: Object2D, index?: number) => void, recursive = false) {
+    each(callback: (child: Object2D, i: number) => void) {
         for (let i = this.children.length - 1; i >= 0; i--) {
-            const child = this.children[i];
-            recursive && child.each(callback, recursive);
-            callback(child, i);
+            callback(this.children[i], i);
         }
     }
 
-    update(delta: number) {
-        this.each(child => child.update(delta));
-    }
-
     set(param: ObjectParam) {
-        if (param.p !== this.param.p) {
-            if (param.p !== undefined) {
-                this.param.p?.remove(this);
-            }
+        const p = this.param.p
+        if (param.p !== p) {
+            param.p !== undefined && p?.remove(this);
             param.p?.add(this);
         }
         this.param = { ...this.param, ...param };
         this.compute();
         this.each(child => child.compute());
+    }
+
+    update(delta: number) {
+        this.each(child => child.update(delta));
     }
 
     protected add(child: Object2D) {
