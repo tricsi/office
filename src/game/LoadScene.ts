@@ -49,7 +49,7 @@ export default class LoadScene extends Object2D {
             const mid: SoundProps = ["sine", 0.2, [0.2, 0]];
             const solo: SoundProps = [wave((n) => 4 / (n * Math.PI) * Math.sin(Math.PI * n * 0.18)), 0.3, [0.5, 0.2]];
             const cord: SoundProps = [[1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1], 0.3, [0.1, 0.2, 0.1]];
-            const bass: SoundProps = ["sawtooth", 0.2, [0.3, 0]];
+            const bass: SoundProps = [[0, 1, 0.81, 0.21, 0.02], 0.2, [0.3, 0]];
             const kick: SoundProps = ["sine", 0.3, [1, 0.1, 0]];
             const snare: SoundProps = ["custom", 0.2, [1, 0]];
             await audio(22050);

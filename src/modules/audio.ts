@@ -56,11 +56,13 @@ function createSound(props: SoundProps, ctx: AudioContext | OfflineAudioContext 
 
     let src: AudioBufferSourceNode | OscillatorNode;
     if (wave === "custom") {
+        filter.type = "bandpass";
         src = ctx.createBufferSource();
         src.buffer = NOISE;
         src.loop = true;
-    }
-    else {
+    } else {
+        filter.type = "highpass";
+        filter.frequency.value = 20;
         src = ctx.createOscillator();
         if (typeof wave === "string") {
             src.type = wave;
@@ -83,7 +85,7 @@ function setParam(param: AudioParam, value: number | number[], length: number, o
 function setSound(sound: Sound, freq: number | number[], length = sound.props[1], offset = 0) {
     const curve = sound.props[2]
     const { src, vol, filter } = sound;
-    setParam(src instanceof OscillatorNode ? src.frequency : filter.detune, freq, length, offset);
+    setParam(src instanceof OscillatorNode ? src.frequency : filter.frequency, freq, length, offset);
     setParam(vol.gain, freq ? curve : 0, length, offset);
 }
 
